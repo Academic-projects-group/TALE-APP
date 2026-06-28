@@ -1,0 +1,18 @@
+{% extends "upload.html" %}
+
+{% block content %}
+<h2>Explore Users</h2>
+<ul>
+    {% for user in users %}
+        <li>
+            <a href="{{ url_for('profile1', user_id=user.id) }}">  <!-- Ensure function name matches -->
+
+                <img src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}" 
+                     class="profile-pic" alt="Profile Picture">
+                {{ user.uname }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

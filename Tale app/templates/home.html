@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Story Platform - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        body, h1, p, ul, li, a, button {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            
+            background-color: #0077ff;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header nav a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .sidebar-toggle {
+            background-color: #005bb5;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .left-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100%;
+            background-color: #222;
+            color: white;
+            padding: 20px;
+            transform: translateX(-250px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .left-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .left-sidebar a,
+        .dark-mode-toggle {
+            display: block;
+            margin: 15px 0;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            background: #444;
+        }
+
+        .left-sidebar a:hover,
+        .dark-mode-toggle:hover {
+            background: #0077ff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .features {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .feature-cards {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card i {
+            font-size: 36px;
+            color: #0077ff;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #0077ff;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #005bb5;
+        }
+
+        .whatsapp-banner {
+            margin: 30px auto;
+            text-align: center;
+            background-color: #25d366;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .whatsapp-banner a {
+            color: #fff;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+        }
+
+        footer a {
+            color: #0077ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+                 /* Flash Messages Styling */
+.flash-message {
+    margin: 10px auto;
+    padding: 15px;  /* Increase padding for better spacing */
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: opacity 0.5s ease-in-out; /* Smooth fade effect */
+}
+
+.flash-message.success {
+    background-color: #4CAF50; /* Green background for success */
+    color: #fff; /* White text */
+    border: 1px solid #388E3C; /* Darker green border */
+    width: 80%;
+}
+
+.flash-message.error {
+    background-color: #f44336; /* Red background for error */
+    color: #fff; /* White text */
+    border: 1px solid #C62828; /* Darker red border */
+    width: 80%;
+}
+    </style>
+</head>
+<body>
+     <!-- Flash Messages Section -->
+     {% with messages = get_flashed_messages(with_categories=true) %}
+     {% if messages %}
+         {% for category, message in messages %}
+             <div class="flash-message {{ 'success' if category == 'success' }}">
+                 {{ message }}
+             </div>
+         {% endfor %}
+     {% endif %}
+ {% endwith %}
+    {% extends "upload.html" %}
+
+    {% block content %}
+<!-- WhatsApp Join Banner -->
+<div class="whatsapp-banner">
+    📲 Join our official WhatsApp Channel for updates, contests & more fun!  
+    <br>
+    <a href=" https://chat.whatsapp.com/Ie87GVzyNvUKEPU3ndKvRV " target="_blank">Click Here to Join</a>
+</div>
+
+<!-- Features Section -->
+<section class="features container">
+    <h2>What You Can Do</h2>
+    <div class="feature-cards">
+        <div class="card">
+            <i class="fas fa-pen-nib"></i>
+            <h3>Create Stories</h3>
+            <p>Write your original tales, add voice and images. Share with the world!</p>
+            <a href="/upload_meme" class="btn-secondary">Start Writing</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-headphones"></i>
+            <h3>Listen to Stories</h3>
+            <p>Enjoy narrated stories from global creators. Relax and listen!</p>
+            <a href="/music" class="btn-secondary">Start Listening</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-users"></i>
+            <h3>Join Community</h3>
+            <p>Follow writers, react to posts, and engage in our creative circle.</p>
+            <a href="/profile" class="btn-secondary">View Profiles</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-gamepad"></i>
+            <h3>Play Games</h3>
+            <p>Unwind with fun and educational games designed for all ages!</p>
+            <a href="/games" class="btn-secondary">Play Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Rules Reminder -->
+<section class="container" style="text-align: center; margin-top: 30px;">
+    <h3>New to the platform?</h3>
+    <p>Check out our <a href="/rules">Rules & Instructions</a> before you start posting!</p>
+</section>
+
+
+
+<!-- JavaScript -->
+<script>
+    function toggleLeftSidebar() {
+        document.getElementById("left-sidebar").classList.toggle("open");
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    });
+</script>
+{% endblock %}
+</body>
+</html>

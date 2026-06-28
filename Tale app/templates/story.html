@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Story Writing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            
+        }
+        .container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #0077ff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        /* Styling for stories */
+        .story {
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .story h3 {
+            margin-top: 0;
+        }
+
+        .emoji-picker {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .emoji-picker:hover {
+            transform: scale(1.2);
+        }
+
+        .story-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .story-buttons button {
+            background-color: #e0e0e0;
+            color: black;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .story-buttons button:hover {
+            background-color: #d0d0d0;
+        }
+
+       /* Style for comment section */
+.comment-section {
+    display: none;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for individual comments */
+.comment {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+
+/* Style for the comment input field and button */
+.comment-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.comment-input input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.comment-input button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.comment-input button:hover {
+    background-color: #0056b3;
+}
+        /* Profile Picture Styles */
+        .profile-pic {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        /* Follow Button */
+.follow-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.follow-btn:hover {
+    background: #218838;
+}
+
+       
+    </style>
+</head>
+<body>
+    {% extends "upload.html" %}
+
+    {% block content %}
+    
+        <h2>Stories</h2>
+        {% if stories %}
+            {% for story in stories %}
+                <div class="story">
+                    <div class="story-header">
+                        <a href="{{ url_for('profile1', user_id=story.author.id) }}">
+                            <img src="{{ url_for('static', filename='profile_pics/' + (story.author.profile_pic if story.author.profile_pic else 'default.png')) }}"  
+                                 class="profile-pic" alt="Profile Picture">
+                            <strong>{{ story.author.uname }}</strong>
+                        </a>
+                        {% if current_user.id != story.author.id %}
+                        <button class="follow-btn" id="follow-btn-{{ story.author.id }}" 
+                            onclick="toggleFollow({{ story.author.id }}, this)">
+                            {{ 'Following' if current_user.is_following(story.author) else 'Follow' }}
+                        </button>
+                    {% endif %}
+                    
+
+
+
+                        <span class="post-time">
+                            {% if story.timestamp %}
+                                {{ story.timestamp.strftime('%B %d, %Y %I:%M %p') }}
+                            {% else %}
+                                No timestamp
+                            {% endif %}
+                        </span>
+                        
+                    </div>
+                    <h3>{{ story.title }}</h3>
+                    <p>{{ story.content }}</p>
+                    <p>Posted on: 
+                        {% if story.timestamp %}
+                            {{ story.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                        {% else %}
+                            Unknown Date
+                        {% endif %}
+                    </p>
+                    
+<!-- 🗣️ Text-to-Speech Button -->
+<!-- TTS Controls -->
+<div style="margin-top: 10px;">
+    <button onclick="speakStory(`{{ story.title|e }}`, `{{ story.content|e }}`)">🔊 Play</button>
+    <button onclick="stopSpeech()">🔇 Mute</button>
+    <select id="voiceSelect">
+        <option value="">Select Voice</option>
+    </select>
+</div>
+
+<!-- JavaScript for TTS -->
+<script>
+    let synth = window.speechSynthesis;
+    let voices = [];
+
+    function populateVoices() {
+        voices = synth.getVoices();
+        const voiceSelect = document.getElementById("voiceSelect");
+
+        // Filter for female English voices
+        voices.forEach((voice, i) => {
+            if (voice.lang.startsWith("en") && voice.name.toLowerCase().includes("female")) {
+                const option = document.createElement("option");
+                option.value = i;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            }
+        });
+
+        // If no female-specific match, list all English voices
+        if (voiceSelect.options.length === 1) {
+            voices.forEach((voice, i) => {
+                if (voice.lang.startsWith("en")) {
+                    const option = document.createElement("option");
+                    option.value = i;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    voiceSelect.appendChild(option);
+                }
+            });
+        }
+    }
+
+    // Some browsers load voices async
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = populateVoices;
+    }
+
+    function speakStory(title, content) {
+        stopSpeech(); // Ensure it stops any existing speech
+        const message = new SpeechSynthesisUtterance(`${title}. ${content}`);
+        const selectedVoiceIndex = document.getElementById("voiceSelect").value;
+        if (selectedVoiceIndex !== "") {
+            message.voice = voices[selectedVoiceIndex];
+        }
+        message.lang = 'en-US';
+        synth.speak(message);
+    }
+
+    function stopSpeech() {
+        synth.cancel();
+    }
+</script>
+
+    
+
+                    <script>
+                        function toggleFollow(userId, button) {
+                            fetch(`/toggle_follow/${userId}`, { method: "POST" })
+                                .then(response => response.json())
+                                .then(data => {
+                                    button.textContent = data.status;
+                                    button.classList.toggle("following", data.status === "Following");
+                                })
+                                .catch(error => console.error("Error:", error));
+                        }
+                        function updateFollowingList() {
+                            fetch("/get_following_list") // API to fetch updated following list
+                            .then(response => response.json())
+                            .then(data => {
+                                const followingContainer = document.getElementById("following-list");
+                                followingContainer.innerHTML = ""; // Clear current list
+                        
+                                if (data.following.length === 0) {
+                                    followingContainer.innerHTML = "<p>You are not following anyone yet.</p>";
+                                    return;
+                                }
+                        
+                                // Append updated users to the list
+                                data.following.forEach(user => {
+                                    const listItem = document.createElement("li");
+                                    listItem.innerHTML = `
+                                        <a href="/profile/${user.id}">
+                                            <img src="/static/profile_pics/${user.profile_pic || 'default.png'}" 
+                                                 class="profile-pic" alt="Profile Picture">
+                                            ${user.uname}
+                                        </a>
+                                    `;
+                                    followingContainer.appendChild(listItem);
+                                });
+                            })
+                            .catch(error => console.error("Error updating following list:", error));
+                        }
+                    </script>
+
+    
+                    <!-- Like, Share, and Comment Section -->
+                    <div class="story-buttons">
+                        <button onclick="likeStory(this, {{ story.id }}, '{{ current_user.uname }}')">
+                            👍 Like <span class="like-count">{{ story.like_count() }}</span>
+                        </button>
+                        
+                        <button onclick="shareStory({{ story.id }})">
+                            🔗 Share <span class="share-count-{{ story.id }}">{{ story.shares }}</span>
+                        </button>
+                        
+                        
+                        <!-- Comment Button -->
+                        <button onclick="toggleComments(this)">
+                            💬 Comment <span class="comment-count-{{ story.id }}">{{ story.comments | length }}</span>
+                        </button> 
+                        <div class="options-container">
+                            <button class="more-options-button">⋮</button>
+                            <div class="options-menu" style="display: none;">
+                                <button class="save-story">💾 Save</button>
+                                <button class="download-story">⬇️ Download</button>
+                                <button class="hide-story">🙈 Hide</button>
+                                <button class="report-story">⚠️ Report</button>
+                            </div>
+                        </div> 
+                         
+                    </div>
+                    
+                     <!-- Comment Section (Initially Hidden) -->
+                     <div class="comment-section" style="display: none;">
+                        <div class="comment-list">
+                            {% if story.comments %}
+                                {% for comment in story.comments %}
+                                    <div class="comment"><strong>{{ comment.username }}:</strong> {{ comment.content }}</div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No comments yet. Be the first to comment!</p>
+                            {% endif %}
+                        </div>
+                        <div class="comment-input">
+                            <input type="text" id="comment-input-{{ story.id }}" placeholder="Write a comment..." 
+                                   onkeypress="if(event.key === 'Enter') postComment({{ story.id }})">
+                            <button onclick="postComment({{ story.id }})">Post</button>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelectorAll(".more-options-button").forEach(button => {
+                                button.addEventListener("click", function (event) {
+                                    event.stopPropagation(); // Prevent menu from closing immediately
+                        
+                                    let optionsMenu = this.nextElementSibling;
+                        
+                                    // Close all other menus
+                                    document.querySelectorAll(".options-menu").forEach(menu => {
+                                        if (menu !== optionsMenu) {
+                                            menu.style.display = "none";
+                                        }
+                                    });
+                        
+                                    // Toggle the clicked menu
+                                    optionsMenu.style.display = optionsMenu.style.display === "block" ? "none" : "block";
+                                });
+                            });
+                        
+                            // Close menu when clicking outside
+                            document.addEventListener("click", function () {
+                                document.querySelectorAll(".options-menu").forEach(menu => {
+                                    menu.style.display = "none";
+                                });
+                            });
+                        
+                            // Prevent menu closing when clicking inside
+                            document.querySelectorAll(".options-menu").forEach(menu => {
+                                menu.addEventListener("click", function (event) {
+                                    event.stopPropagation();
+                                });
+                            });
+                        
+                            // Function to handle actions and show alert only once
+                            function handleAction(buttonClass, message) {
+                                document.querySelectorAll(buttonClass).forEach(button => {
+                                    button.addEventListener("click", function () {
+                                        if (!this.dataset.clicked) { // Prevent multiple alerts
+                                            alert(message);
+                                            this.dataset.clicked = "true";
+                                        }
+                                        this.closest(".options-menu").style.display = "none"; // Close menu after action
+                                    });
+                                });
+                            }
+                        
+                            // Apply action handlers
+                            handleAction(".save-story", "Story Saved! ✅");
+                            handleAction(".download-story", "Downloading Story... ⬇️");
+                            handleAction(".hide-story", "Story Hidden! 🙈");
+                            handleAction(".report-story", "Story Reported! ⚠️");
+                        });
+                        
+                    </script>
+                    
+ 
+                    
+                    
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No stories uploaded yet. Be the first to share your story!</p>
+        {% endif %}
+    
+    <script>
+        function likeStory(button, storyId, username) {
+            fetch(`/like/${storyId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    button.classList.add("liked");  // Add visual feedback
+                } else {
+                    button.classList.remove("liked");
+                }
+                button.querySelector(".like-count").innerText = data.like_count;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+        
+        function shareStory(storyId) {
+            fetch(`/share/${storyId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                const shareCountElement = document.querySelector(`.share-count-${storyId}`);
+                if (shareCountElement) {
+                    shareCountElement.innerText = data.share_count;
+                }
+                alert("Story shared successfully! 🔗");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Something went wrong! Please try again.");
+            });
+        }
+        
+        // Add event listeners to share buttons
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".share-button").forEach(button => {
+                button.addEventListener("click", function () {
+                    shareStory(this.dataset.storyId);
+                });
+            });
+        });
+        
+        
+        
+        function toggleComments(button) {
+            let commentSection = button.closest(".story-buttons").nextElementSibling;
+            
+            if (!commentSection) {
+                console.error("Comment section not found.");
+                return;
+            }
+        
+            // Toggle visibility
+            if (commentSection.style.display === "none" || commentSection.style.display === "") {
+                commentSection.style.display = "block";
+            } else {
+                commentSection.style.display = "none";
+            }
+        }
+        
+        
+        function handleEnter(event, storyId) {
+            if (event.key === "Enter") {
+                postComment(storyId);  // Calls postComment when Enter is pressed
+            }
+        }
+        
+        function postComment(storyId) {
+            let input = document.getElementById(`comment-input-${storyId}`);
+            if (!input) {
+                console.error(`Error: Input field not found for story ID: ${storyId}`);
+                return;
+            }
+        
+            let commentContent = input.value.trim();
+            if (commentContent === "") {
+                console.warn("Comment is empty. Not posting.");
+                return;
+            }
+        
+            fetch(`/comment/${storyId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: commentContent })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.commented) {
+                    let commentList = input.closest(".comment-section").querySelector(".comment-list");
+                    
+                    if (commentList) {
+                        let newComment = document.createElement("div");
+                        newComment.classList.add("comment");
+                        newComment.innerHTML = `<strong>${data.username}:</strong> ${data.comment_content}`;
+                        commentList.appendChild(newComment);
+                    }
+        
+                    input.value = "";  // Clear input field
+        
+                    // Update comment count
+                    let commentCountSpan = document.querySelector(`.comment-count-${storyId}`);
+                    if (commentCountSpan) {
+                        commentCountSpan.innerText = data.comment_count;
+                    }
+                } else {
+                    console.error("Comment was not added:", data);
+                }
+            })
+            .catch(error => console.error("Error posting comment:", error));
+        }    
+        
+        
+        
+    </script>
+    
+    {% endblock %}
+    
+    
+    
+</body>
+    </html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kids Music Playlist</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff5733;
+    }
+    select {
+      padding: 10px;
+      font-size: 16px;
+    }
+    .player-container {
+      margin-top: 30px;
+    }
+    iframe, audio {
+      display: none;
+      margin-top: 20px;
+    }
+    .now-playing {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ff5733;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .song-list {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+    }
+    .song-list li {
+      padding: 5px;
+      cursor: pointer;
+    }
+    .song-list li:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+    {% extends "upload.html" %}
+
+    {% block content %}
+  <h1>Kids Music Playlist</h1>
+  
+  
+  <label for="languageSelect">Choose Language:</label>
+  <select id="languageSelect" onchange="loadPlaylist()">
+    <option value="">-- Select Language --</option>
+    <option value="english">English</option>
+    <option value="hindi">Hindi</option>
+    <option value="telugu">Telugu</option>
+  </select>
+
+  <div id="songListContainer" style="display:none;">
+    <h2>Songs in <span id="selectedLanguage"></span></h2>
+    <ul id="songList" class="song-list"></ul>
+  </div>
+
+  <div class="player-container">
+    <audio id="audioPlayer" controls></audio>
+    <iframe id="youtubePlayer" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+    <div class="now-playing" id="nowPlaying"></div>
+  </div>
+
+  <div class="controls">
+    <button class="button" onclick="prevSong()">Previous</button>
+    <button class="button" onclick="nextSong()">Next</button>
+  </div>
+  <br><br><a href="/index" class="button">Back</a>
+
+  <script>
+    const playlists = {
+      english: [
+        { title: "Song 1", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+        { title: "Song 2", type: 'youtube', src: 'https://www.youtube.com/embed/XqZsoesa55w' },
+        { title: "Song 3", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+        { title: "Song 4", type: 'youtube', src: 'https://www.youtube.com/embed/MOgj68f4pDg' },
+        { title: "Song 5", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+        { title: "Song 6", type: 'youtube', src: 'https://www.youtube.com/embed/fGx6K90TmCI' },
+        { title: "Song 7", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+        { title: "Song 8", type: 'youtube', src: 'https://www.youtube.com/embed/RswnMr9ZEPw' },
+        { title: "Song 9", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
+        { title: "Song 10", type: 'youtube', src: 'https://www.youtube.com/embed/71hqRT9U0wg' },
+        { title: "Song 11", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
+        { title: "Song 12", type: 'youtube', src: 'https://www.youtube.com/embed/fGx6K90TmCI' },
+        { title: "Song 13", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
+        { title: "Song 14", type: 'youtube', src: 'https://www.youtube.com/embed/Tt_X5dcusjQ' },
+        { title: "Song 15", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' },
+        { title: "Song 16", type: 'youtube', src: 'https://www.youtube.com/embed/XqZsoesa55w' },
+        { title: "Song 17", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3' },
+        { title: "Song 18", type: 'youtube', src: 'https://www.youtube.com/embed/j0rSXjVuJVg' },
+        { title: "Song 19", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' },
+        { title: "Song 20", type: 'youtube', src: 'https://www.youtube.com/embed/8c7oYzP8mIs' }
+      ],
+      hindi: [
+        { title: "Song 1", type: 'youtube', src: 'https://www.youtube.com/embed/_mZbzDOpylA' },
+        { title: "Song 2", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3' },
+        { title: "Song 3", type: 'youtube', src: 'https://www.youtube.com/embed/ho079nQUx54' },
+        { title: "Song 4", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3' },
+        { title: "Song 5", type: 'youtube', src: 'https://www.youtube.com/embed/8ZjpI6fgYSY' },
+        { title: "Song 6", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3' },
+        { title: "Song 7", type: 'youtube', src: 'https://www.youtube.com/embed/Nt3etFMEZbI' },
+        { title: "Song 8", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3' },
+        { title: "Song 9", type: 'youtube', src: 'https://www.youtube.com/embed/F4XfhnOFGpQ' },
+        { title: "Song 10", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3' },
+        { title: "Song 11", type: 'youtube', src: 'https://www.youtube.com/embed/oypUUrjLZWM' },
+        { title: "Song 12", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3' },
+        { title: "Song 13", type: 'youtube', src: 'https://www.youtube.com/embed/4smnR3p2zkA' },
+        { title: "Song 14", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-17.mp3' },
+        { title: "Song 15", type: 'youtube', src: 'https://www.youtube.com/embed/pysNf2yTL5g' },
+        { title: "Song 16", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3' },
+        { title: "Song 17", type: 'youtube', src: 'https://www.youtube.com/embed/1H9K_OA-KQI' },
+        { title: "Song 18", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-19.mp3' },
+        { title: "Song 19", type: 'youtube', src: 'https://www.youtube.com/embed/Ju3Y7Z3ZV0k' },
+        { title: "Song 20", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-20.mp3' }
+      ],
+      telugu: [
+        { title: "Song 1", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-21.mp3' },
+        { title: "Song 2", type: 'youtube', src: 'https://www.youtube.com/embed/VocB9dfjZ3g' },
+        { title: "Song 3", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-22.mp3' },
+        { title: "Song 4", type: 'youtube', src: 'https://www.youtube.com/embed/WgMHm5OReS4' },
+        { title: "Song 5", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-23.mp3' },
+        { title: "Song 6", type: 'youtube', src: 'https://www.youtube.com/embed/VnRrxpy5kaI' },
+        { title: "Song 7", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-24.mp3' },
+        { title: "Song 8", type: 'youtube', src: 'https://www.youtube.com/embed/2S__fbCGwOM' },
+        { title: "Song 9", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-25.mp3' },
+        { title: "Song 10", type: 'youtube', src: 'https://www.youtube.com/embed/uvcIye3WcS8' },
+        { title: "Song 11", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-26.mp3' },
+        { title: "Song 12", type: 'youtube', src: 'https://www.youtube.com/embed/lAIGb1lfpBw' },
+        { title: "Song 13", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-27.mp3' },
+        { title: "Song 14", type: 'youtube', src: 'https://www.youtube.com/embed/NpY_xQbB9gU' },
+        { title: "Song 15", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-28.mp3' },
+        { title: "Song 16", type: 'youtube', src: 'https://www.youtube.com/embed/mqsZEDuMZqQ' },
+        { title: "Song 17", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-29.mp3' },
+        { title: "Song 18", type: 'youtube', src: 'https://www.youtube.com/embed/BdB2GVVS9jA' },
+        { title: "Song 19", type: 'mp3', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-30.mp3' },
+        { title: "Song 20", type: 'youtube', src: 'https://www.youtube.com/embed/vvUeDxTgKbM' }
+      ]
+    };
+
+    let currentPlaylist = [];
+    let currentIndex = 0;
+    const audioPlayer = document.getElementById('audioPlayer');
+    const youtubePlayer = document.getElementById('youtubePlayer');
+    const nowPlaying = document.getElementById('nowPlaying');
+    const songListContainer = document.getElementById('songListContainer');
+    const songList = document.getElementById('songList');
+    const selectedLanguage = document.getElementById('selectedLanguage');
+
+    function loadPlaylist() {
+      const lang = document.getElementById('languageSelect').value;
+      if (!lang || !playlists[lang]) return;
+      currentPlaylist = playlists[lang];
+      selectedLanguage.textContent = lang.charAt(0).toUpperCase() + lang.slice(1);  // Capitalize first letter of language
+      songListContainer.style.display = 'block';
+      
+      // Populate song list
+      songList.innerHTML = '';
+      currentPlaylist.forEach((song, index) => {
+        const li = document.createElement('li');
+        li.textContent = song.title;
+        li.onclick = () => {
+          currentIndex = index;
+          playCurrent();
+        };
+        songList.appendChild(li);
+      });
+
+      currentIndex = 0;
+      playCurrent();
+    }
+
+    function playCurrent() {
+      const track = currentPlaylist[currentIndex];
+      if (!track) return;
+
+      nowPlaying.textContent = `Playing: ${track.title}`;
+
+      if (track.type === 'mp3') {
+        youtubePlayer.style.display = 'none';
+        audioPlayer.style.display = 'inline-block';
+        audioPlayer.src = track.src;
+        audioPlayer.play();
+      } else if (track.type === 'youtube') {
+        audioPlayer.pause();
+        audioPlayer.style.display = 'none';
+        youtubePlayer.style.display = 'inline-block';
+        youtubePlayer.src = track.src + '?autoplay=1&enablejsapi=1';
+      }
+    }
+
+    function nextSong() {
+      currentIndex++;
+      if (currentIndex < currentPlaylist.length) {
+        playCurrent();
+      } else {
+        currentIndex = 0;
+        playCurrent();
+      }
+    }
+
+    function prevSong() {
+      currentIndex--;
+      if (currentIndex < 0) {
+        currentIndex = currentPlaylist.length - 1;
+      }
+      playCurrent();
+    }
+
+    // Advance to next track when MP3 ends
+    audioPlayer.addEventListener('ended', () => {
+      nextSong();
+    });
+
+    // Monitor YouTube iframe ends
+    window.addEventListener("message", function(event) {
+      if (event.data === "youtube-ended") {
+        nextSong();
+      }
+    });
+  </script>
+  {% endblock %}
+    
+</body>
+</html>

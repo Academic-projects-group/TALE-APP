@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Recovery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d8ca25;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+           /* background: url('https://i.pinimg.com/originals/78/7d/61/787d61ed4e0d06b6c18ab2000baf14e0.gif') no-repeat center center fixed; *//* Replace with your wallpaper image URL */
+            background: url('https://callcia.com/wp-content/uploads/2019/08/Form-background-image-2.jpg') no-repeat center center fixed;
+            background-size: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgb(246, 244, 245);
+        }
+        .container {
+            background-color: #0296c7;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(176, 48, 48, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #cecaca;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #faf9f9;
+        }
+        .form-group input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ece6e6;
+            border-radius: 5px;
+        }
+        .btn {
+            text-align: center;
+        }
+        .btn button {
+            background-color: #2505b2;
+            color: rgb(251, 247, 247);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn button:hover {
+            background-color: #2b09e9;
+        }
+        .small {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .small a {
+            color: #0a0a08;
+            text-decoration: none;
+        }
+        .small a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Password Recovery</h1>
+        <p class="small mb-3">Enter your email and new password.</p>
+        
+        <form action="/reset" method="post">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Your email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password:</label>
+                <input type="password" id="new_password" placeholder="New Password" name="new_password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" placeholder="Confirm Password" name="confirm_password" required>
+            </div>
+            <div class="btn">
+                <button type="submit">Update</button>
+            </div>
+        </form>
+
+        <div class="small">
+            <p><a href="/">Login page</a></p>
+            <p><a href="/register">Need an account? Sign up!</a></p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+</body>
+</html>

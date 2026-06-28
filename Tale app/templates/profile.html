@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        /* Header Styling */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #033193;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        body {
+            padding-top: 60px; /* Prevent content from being hidden behind header */
+        }
+        
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: #f8f2f2;
+        }
+        
+        nav {
+            margin-left: auto;
+            margin-right: 30px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #f7f1f1;
+            font-weight: 500;
+        }
+        
+        nav a:hover {
+            color: #0077ff;
+        }
+
+        /* Sidebar Styling */
+        .left-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            transform: translateX(-260px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .left-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+            background: none;
+            border: none;
+        }
+
+        .left-sidebar a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background: #444;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .left-sidebar a:hover {
+            background: #0077ff;
+        }
+
+        .sidebar-toggle {
+            background-color: #005bb5;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: #004699;
+        }
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            display: block;
+            background-color: #0077ff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .dark-mode-toggle:hover {
+            background: #005bb5;
+        }
+
+
+        .container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            background-color: #f8f8f8;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50% ;
+            
+        }
+
+        .container:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* Heading Styles */
+        h1 {
+            font-size: 2em;
+            color: #0077ff;
+            margin-bottom: 30px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Profile Picture Styles */
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #0077ff;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 80%;
+            margin-left: 10%;
+        }
+
+        label {
+            font-size: 1em;
+            color: #555;
+            font-weight: bold;
+            text-align: left;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-field {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .input-field:focus {
+            border-color: #0077ff;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 119, 255, 0.2);
+        }
+
+        /* Text Field Styles */
+        .text-field {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+            background: #f8f8f8;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            background: #0077ff;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #005bb5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Back Button Styles */
+        .back-btn {
+            margin-top: 20px;
+            background: #ddd;
+            color: #333;
+            text-transform: none;
+        }
+
+        .back-btn:hover {
+            background: #bbb;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Edit Button Styles */
+        .edit-btn {
+            margin-top: 20px;
+            background: #f8a745;
+            color: #fff;
+            text-transform: none;
+        }
+
+        .edit-btn:hover {
+            background: #e88d28;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .profile-pic {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+
+
+
+        /* More Options Dropdown */
+.options-container {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-top: -30px;
+}
+
+.more-options-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.options-menu {
+    position: absolute;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    display: none;
+    flex-direction: column;
+    min-width: 120px;
+}
+
+.options-menu button {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.options-menu button:hover {
+    background: #f1f1f1;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    display: none;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+}
+
+.comments-section button {
+    margin-top: 5px;
+    padding: 6px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.comments-section button:hover {
+    background: #0056b3;
+}
+/* Meme Image */
+.meme-img {
+    width: 100%; /* Ensures it takes full width */
+    height: auto; /* Allows image to scale properly */
+    max-height: none; /* Removes any height restrictions */
+    display: block; /* Prevents inline spacing issues */
+    border-radius: 8px;
+}
+
+
+.meme-img:hover {
+    transform: scale(1.02);
+}
+
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .meme-post {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .profile-pic {
+        width: 35px;
+        height: 35px;
+    }
+
+    .story-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+/* Story Post Container */
+.story-post {
+    background-color: #f9f6f2; /* Light beige for a softer look */
+    border-radius: 15px;
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.15);
+    margin: 20px 0;
+    padding: 20px;
+    width: 100%;
+    max-width: 650px;
+    border-left: 8px solid #ff7f50; /* Coral border for uniqueness */
+    transition: transform 0.3s ease;
+}
+
+.story-post:hover {
+    transform: scale(1.02); /* Slight pop effect on hover */
+}
+
+/* Header: Profile, Username, and Timestamp */
+.story-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.user-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.profile-pic1 {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px; /* Square with rounded corners */
+    object-fit: cover;
+    margin-right: 12px;
+    border: 3px solid #ff7f50;
+}
+
+.post-time {
+    font-size: 13px;
+    color: #777;
+    font-style: italic;
+}
+
+/* Follow Button */
+.follow-btn {
+    background-color: transparent;
+    color: #ff7f50;
+    border: 2px solid #ff7f50;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.follow-btn:hover {
+    background-color: #ff7f50;
+    color: white;
+}
+.story-post{
+    align-items: center;
+}
+/* Story Content */
+.story-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 8px;
+    text-decoration: underline;
+    text-decoration-color: #ff7f50;
+}
+
+.story-text {
+    font-size: 17px;
+    color: #444;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+/* Like, Share, Comment Buttons */
+.story-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.story-buttons button {
+    background-color: #ffefd5;
+    border: 2px solid #ff7f50;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.3s ease;
+}
+
+.story-buttons button:hover {
+    background-color: #ffdab9;
+}
+
+/* More Options Dropdown */
+.more-options-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    color: #ff7f50;
+}
+
+.options-container {
+    position: relative;
+    display: inline-block;
+}
+
+.options-menu {
+    position: absolute;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: none;
+    right: 0;
+    z-index: 10;
+}
+
+.options-menu button {
+    background: none;
+    border: none;
+    padding: 10px 14px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+}
+
+.options-menu button:hover {
+    background-color: #ffdab9;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 12px;
+    display: none;
+    background-color: #fff8dc;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ff7f50;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ff7f50;
+    border-radius: 5px;
+}
+
+.comments-list {
+    margin-top: 8px;
+}
+
+/* Layout: Separate Memes (Left) & Stories (Right) */
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Memes Section */
+.memes-container {
+    width: 60%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Stories Section */
+.stories-container {
+    width: 60%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Meme & Story Post Common Styles */
+.meme-post, .story-post {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+/* Profile Picture Styles */
+.profile-pic2 {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+.options-menu {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 10;
+}
+.options-menu button {
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 5px;
+    cursor: pointer;
+}
+.options-menu button:hover {
+    background: #f0f0f0;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <button class="sidebar-toggle" onclick="toggleLeftSidebar()">☰ Menu</button>
+        <div class="logo">Story Platform</div>
+        <nav>
+            <a href="/home">Home</a>
+            <a href="/upload_meme">Explore</a>
+            <a href="/profile">Profile</a>
+            <a href="/">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Full Left Sidebar -->
+    <div class="left-sidebar" id="left-sidebar">
+        <div class="sidebar-header">
+            <button class="back-arrow" onclick="toggleLeftSidebar()">⬅</button>
+        </div>
+        <a href="/story">📚 Stories</a>
+        <a href="/memes">😂 Memes</a>
+        <a href="/story1">🎤 Singing Competition</a>
+        <a href="/index">📂 Saved Stories</a>
+        <a href="/settings">⚙️ Account Settings</a>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </div>
+
+    <div class="container">
+        <h1>👤 User Profile</h1>
+        <img src="{{ url_for('static', filename='profile_pics/' + (current_user.profile_pic if current_user.profile_pic else 'default.png')) }}" class="profile-pic" alt="Profile Picture">
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <label for="uname">Username</label>
+            <input type="text" id="uname" name="uname" class="text-field" value="{{ current_user.uname }}" disabled />
+            <input type="text" id="edit_uname" name="uname" class="input-field" value="{{ current_user.uname }}" />
+
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" class="text-field" value="{{ current_user.email }}" disabled />
+            <input type="email" id="edit_email" name="email" class="input-field" value="{{ current_user.email }}" />
+
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="fname" class="text-field" value="{{ current_user.fname }}" disabled />
+            <input type="text" id="edit_fname" name="fname" class="input-field" value="{{ current_user.fname }}" />
+
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lname" class="text-field" value="{{ current_user.lname }}" disabled />
+            <input type="text" id="edit_lname" name="lname" class="input-field" value="{{ current_user.lname }}" />
+
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" class="text-field" disabled>{{ current_user.bio }}</textarea>
+            <textarea id="edit_bio" name="bio" class="input-field">{{ current_user.bio }}</textarea>
+
+            <label for="profile_pic">Upload Profile Picture</label>
+            <input type="file" id="profile_pic" name="profile_pic" class="input-field" />
+
+            <div class="checkbox-container" style="text-align: left;">
+                <label class="checkbox-label" for="private_account">
+                    <input type="checkbox" id="private_account" name="private_account" class="checkbox-input" />
+                    Make this account Private
+                </label>
+            </div>
+
+            <button type="submit" class="btn" id="save-btn" style="display: none;">Save Changes</button>
+            <button type="button" class="btn" id="edit-btn">Edit</button>
+           <!--<button type="button" class="btn back-btn" onclick="window.location.href='{{ url_for('index') }}'">⬅ Back to Home</button>--> 
+            <a href="/home">Home</a>
+        </form>
+
+
+    </div>
+    <h2>Following</h2>
+    <ul id="following-list">
+        {% for followed_user in current_user.following.all() %}
+            <li>
+                <a href="{{ url_for('profile1', user_id=followed_user.id) }}">
+                    <img src="{{ url_for('static', filename='profile_pics/' + (followed_user.profile_pic if followed_user.profile_pic else 'default.png')) }}"  
+                    class="profile-pic2" alt="Profile Picture">
+                    <strong>{{ followed_user.uname }}</strong><br>
+                </a>
+                {% if current_user.id != followed_user.id %}
+                    <button class="follow-btn" id="follow-btn-{{ followed_user.id }}" 
+                        onclick="toggleFollow({{ followed_user.id }}, this)">
+                        {{ 'Following' if current_user.is_following(followed_user) else 'Follow' }}
+                    </button>
+                {% endif %}
+            </li>
+        {% else %}
+            <p>You are not following anyone yet.</p>
+        {% endfor %}
+    </ul>
+    <script>
+     
+    function toggleFollow(userId, button) {
+        fetch(`/toggle_follow/${userId}`, { method: "POST" })
+        .then(response => response.json())
+        .then(data => {
+            button.textContent = data.status; // Update button text
+            updateFollowingList(); // Refresh the following list
+        })
+        .catch(error => console.error("Error:", error));
+    }
+    
+    function updateFollowingList() {
+        fetch("/get_following_list") // API to fetch updated following list
+        .then(response => response.json())
+        .then(data => {
+            const followingContainer = document.getElementById("following-list");
+            followingContainer.innerHTML = "";
+
+            if (data.following.length === 0) {
+                followingContainer.innerHTML = "<p>You are not following anyone yet.</p>";
+                return;
+            }
+
+            data.following.forEach(user => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <a href="/profile/${user.id}">
+                        <img src="/static/profile_pics/${user.profile_pic || 'default.png'}" 
+                             class="profile-pic" alt="Profile Picture">
+                        ${user.uname}
+                    </a>
+                `;
+                followingContainer.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error("Error updating following list:", error));
+    }
+</script>
+
+<div class="content-container">
+    <!-- Left Side: Memes -->
+    <div class="memes-container">
+        <h3>Memes</h3>
+        {% if memes %}
+            {% for meme in memes %}
+                <div class="meme-post">
+                    <div class="user-info">
+                        <a href="{{ url_for('profile1', user_id=meme.user.id) }}" class="user-link">
+                            <img src="{{ url_for('static', filename='profile_pics/' + (meme.user.profile_pic if meme.user.profile_pic else 'default.png')) }}"  
+                                 class="profile-pic2">
+                            <strong>{{ meme.user.uname }}</strong>
+                        </a>
+                        <span class="post-time">
+                            {{ meme.timestamp.strftime('%B %d, %Y %I:%M %p') if meme.timestamp else 'Unknown Date' }}
+                        </span>
+                    </div>
+                    <img src="{{ meme.file_path }}" alt="Meme Image" class="meme-img">
+
+                    <p class="caption">{{ meme.caption }}</p>
+                     <!-- Like, Share, and Comment Section -->
+                <div class="story-buttons">
+                    <button id="like-btn-{{ meme.id }}" onclick="likeMeme(this, {{ meme.id }}, '{{ current_user.uname }}')" data-liked="{% if current_user in meme.likes %}true{% else %}false{% endif %}">
+                      {% if current_user in meme.likes %} 👎 Unlike {% else %} 👍 Like {% endif %}
+                    </button>
+
+                    <button onclick="shareMeme({{ meme.id }})">🔗 Share <span class="share-count-{{ meme.id }}">{{ meme.shares }}</span>
+                    </button>
+
+                    
+                    <!-- Comment Button -->
+                    <button onclick="toggleComments({{ meme.id }})">💬 Comment <span class="comment-count-{{ meme.id }}">{{ meme.comments | length }}</span></button>
+                    <button onclick="toggleOptions({{ meme.id }})" class="more-options-button">⋮</button>
+                    <div id="options-menu-{{ meme.id }}" class="options-menu" style="display: center;">
+                        <button onclick="editMeme({{ meme.id }})">✏️ Edit</button>
+                        <button onclick="deleteMeme({{ meme.id }})">🗑️ Delete</button>
+                        <a href="{{ url_for('download_meme', meme_id=meme.id) }}" download>
+                            <button>⬇️ Download</button>
+                        </a>
+                    </div>
+                </div>
+                
+<script>
+    function toggleOptions(memeId) {
+        let menu = document.getElementById(`options-menu-${memeId}`);
+        menu.style.display = menu.style.display === "none" ? "block" : "none";
+    }
+    
+    function editMeme(memeId) {
+        let newCaption = prompt("Enter new caption:");
+        if (newCaption) {
+            fetch(`/edit_meme/${memeId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ caption: newCaption })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) location.reload();
+              });
+        }
+    }
+    
+    function deleteMeme(memeId) {
+        if (confirm("Are you sure you want to delete this meme?")) {
+            fetch(`/delete_meme/${memeId}`, { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) location.reload();
+                });
+        }
+    }
+    
+</script>
+
+                 <!-- Comments Section -->
+                 <div id="comments-section-{{ meme.id }}" class="comments-section" style="display: none;">
+                    <textarea id="comment-input-{{ meme.id }}" class="comment-input" placeholder="Write a comment..."></textarea>
+                    <button onclick="postComment({{ meme.id }})">Post Comment</button>
+                    
+                    <div class="comments-list">
+                        {% if meme.comments %}
+                            {% for comment in meme.comments %}
+                                <div class="comment">
+                                    <strong>{{ comment.username }}:</strong> {{ comment.content }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No comments yet. Be the first to comment!</p>
+                        {% endif %}
+                    </div>
+                </div>
+                    
+    </div>
+            {% endfor %}
+        {% else %}
+            <p>No memes posted yet.</p>
+        {% endif %}
+</div>
+<script>
+    function toggleComments(memeId) {
+        let commentSection = document.getElementById(`comments-section-${memeId}`);
+        
+        if (commentSection.style.display === "none") {
+            commentSection.style.display = "block";
+        } else {
+            commentSection.style.display = "none";
+        }
+    }
+    
+        function likeMeme(button, memeId, username) {
+            fetch(`/like/${memeId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.already_liked) {
+                    alert("You already liked this meme! 👍");
+                } else if (data.liked) {
+                    button.innerHTML = "👎 Unlike";
+                    alert("You liked this meme! 👍");
+                } else {
+                    button.innerHTML = "👍 Like";
+                    alert("You unliked this meme! 👎");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Something went wrong! Please try again.");
+            });
+        }
+      
+            function shareMeme(memeId) {
+                fetch(`/share/${memeId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const shareCountElement = document.querySelector(`.share-count-${memeId}`);
+                    if (shareCountElement) {
+                        shareCountElement.innerText = data.shares;
+                    }
+                    alert("Meme shared successfully! 🔗");
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Something went wrong! Please try again.");
+                });
+            }
+          
+    // Toggle comment section visibility
+function toggleComments(memeId) {
+let commentSection = document.getElementById(`comments-section-${memeId}`);
+commentSection.style.display = (commentSection.style.display === "none") ? "block" : "none";
+}
+
+function postComment(memeId) {
+let input = document.getElementById(`comment-input-${memeId}`);
+let commentContent = input.value.trim();
+
+if (commentContent === "") return; // Prevent empty comments
+
+fetch(`/comment/${memeId}`, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ content: commentContent })
+})
+.then(response => response.json())
+.then(data => {
+if (data.commented) {
+let commentList = document.getElementById(`comments-list-${memeId}`);
+let newComment = document.createElement("div");
+newComment.classList.add("comment");
+newComment.innerHTML = `<strong>You:</strong> ${commentContent}`;
+commentList.appendChild(newComment);
+
+input.value = ""; // Clear input field
+
+// Update comment count dynamically
+let commentCountSpan = document.querySelector(`.comment-count-${memeId}`);
+if (commentCountSpan) {
+commentCountSpan.innerText = data.comment_count;
+}
+}
+})
+.catch(error => console.error("Error:", error));
+}
+</script>
+    <!-- Right Side: Stories -->
+<div class="stories-container">
+        <h3>Stories</h3>
+        {% if stories %}
+            {% for story in stories %}
+                {% if story.author.id == user.id %}
+                    <div class="story-post">
+                        <div class="story-header">
+                            <a href="{{ url_for('profile1', user_id=story.author.id) }}" class="user-link">
+                                <img src="{{ url_for('static', filename='profile_pics/' + (story.author.profile_pic if story.author.profile_pic else 'default.png')) }}"  
+                                     class="profile-pic2">
+                                <strong>{{ story.author.uname }}</strong>
+                            </a>
+                            <span class="post-time">
+                                {{ story.timestamp.strftime('%B %d, %Y %I:%M %p') if story.timestamp else 'No timestamp' }}
+                            </span>
+                        </div>
+                        <h3 class="story-title">{{ story.title }}</h3>
+                        <p class="story-text">{{ story.content }}</p>
+                        <p class="post-date">Posted on: {{ story.timestamp.strftime('%Y-%m-%d %H:%M:%S') if story.timestamp else 'Unknown Date' }}</p>
+
+                        <!-- Like, Share, and Comment Section -->
+                        <div class="story-buttons">
+                    <button onclick="likeStory(this, {{ story.id }}, '{{ current_user.uname }}')">
+                        👍 Like <span class="like-count">{{ story.like_count() }}</span>
+                    </button>
+                    
+                    <button onclick="shareStory({{ story.id }})">
+                        🔗 Share <span class="share-count-{{ story.id }}">{{ story.shares }}</span>
+                    </button>
+                    
+                    
+                    <!-- Comment Button -->
+                    <button onclick="toggleComments(this)">
+                        💬 Comment <span class="comment-count-{{ story.id }}">{{ story.comments | length }}</span>
+                    </button>
+                    <button onclick="toggleOptions({{ story.id }})" class="more-options-button">⋮</button>
+<div id="options-menu-{{ story.id }}" class="options-menu" style="display: none;">
+    <button onclick="editStory({{ story.id }})">✏️ Edit</button>
+    <button onclick="deleteStory({{ story.id }})">🗑️ Delete</button>
+    <a href="{{ url_for('download_story', story_id=story.id) }}" download>
+        <button>⬇️ Download</button>
+    </a>
+</div>
+
+<script>
+    function toggleOptions(storyId) {
+        let menu = document.getElementById(`options-menu-${storyId}`);
+        menu.style.display = (menu.style.display === "none" || menu.style.display === "") ? "block" : "none";
+    }
+    
+    // Edit Story
+    function editStory(storyId) {
+        let newTitle = prompt("Enter new title:");
+        let newContent = prompt("Enter new content:");
+        if (newTitle && newContent) {
+            fetch(`/edit_story/${storyId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title: newTitle, content: newContent })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) location.reload();
+                  else alert("Failed to update story.");
+              });
+        }
+    }
+    
+    // Delete Story
+    function deleteStory(storyId) {
+        if (confirm("Are you sure you want to delete this story?")) {
+            fetch(`/delete_story/${storyId}`, { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) location.reload();
+                    else alert("Failed to delete story.");
+                });
+        }
+    }
+    
+    
+</script>
+                    
+                                 
+                        </div>
+                
+                 <!-- Comment Section (Initially Hidden) -->
+                 <div class="comment-section" style="display: none;">
+                    <div class="comment-list">
+                        {% if story.comments %}
+                            {% for comment in story.comments %}
+                                <div class="comment"><strong>{{ comment.username }}:</strong> {{ comment.content }}</div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No comments yet. Be the first to comment!</p>
+                        {% endif %}
+                    </div>
+                    <div class="comment-input">
+                        <input type="text" id="comment-input-{{ story.id }}" placeholder="Write a comment..." 
+                               onkeypress="if(event.key === 'Enter') postComment({{ story.id }})">
+                        <button onclick="postComment({{ story.id }})">Post</button>
+                    </div>
+                </div>
+            </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p>No stories yet.</p>
+        {% endif %}
+    
+
+
+<script>
+function likeStory(button, storyId, username) {
+    fetch(`/like/${storyId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.liked) {
+            button.classList.add("liked");  // Add visual feedback
+        } else {
+            button.classList.remove("liked");
+        }
+        button.querySelector(".like-count").innerText = data.like_count;
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function shareStory(storyId) {
+    fetch(`/share/${storyId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        const shareCountElement = document.querySelector(`.share-count-${storyId}`);
+        if (shareCountElement) {
+            shareCountElement.innerText = data.share_count;
+        }
+        alert("Story shared successfully! 🔗");
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Something went wrong! Please try again.");
+    });
+}
+
+// Add event listeners to share buttons
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".share-button").forEach(button => {
+        button.addEventListener("click", function () {
+            shareStory(this.dataset.storyId);
+        });
+    });
+});
+
+
+
+function toggleComments(button) {
+    let commentSection = button.closest(".story-buttons").nextElementSibling;
+    
+    if (!commentSection) {
+        console.error("Comment section not found.");
+        return;
+    }
+
+    // Toggle visibility
+    if (commentSection.style.display === "none" || commentSection.style.display === "") {
+        commentSection.style.display = "block";
+    } else {
+        commentSection.style.display = "none";
+    }
+}
+
+
+function handleEnter(event, storyId) {
+    if (event.key === "Enter") {
+        postComment(storyId);  // Calls postComment when Enter is pressed
+    }
+}
+
+function postComment(storyId) {
+    let input = document.getElementById(`comment-input-${storyId}`);
+    if (!input) {
+        console.error(`Error: Input field not found for story ID: ${storyId}`);
+        return;
+    }
+
+    let commentContent = input.value.trim();
+    if (commentContent === "") {
+        console.warn("Comment is empty. Not posting.");
+        return;
+    }
+
+    fetch(`/comment/${storyId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: commentContent })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.commented) {
+            let commentList = input.closest(".comment-section").querySelector(".comment-list");
+            
+            if (commentList) {
+                let newComment = document.createElement("div");
+                newComment.classList.add("comment");
+                newComment.innerHTML = `<strong>${data.username}:</strong> ${data.comment_content}`;
+                commentList.appendChild(newComment);
+            }
+
+            input.value = "";  // Clear input field
+
+            // Update comment count
+            let commentCountSpan = document.querySelector(`.comment-count-${storyId}`);
+            if (commentCountSpan) {
+                commentCountSpan.innerText = data.comment_count;
+            }
+        } else {
+            console.error("Comment was not added:", data);
+        }
+    })
+    .catch(error => console.error("Error posting comment:", error));
+}    
+
+
+function toggleFollow(userId, button) {
+    fetch(`/toggle_follow/${userId}`, { method: "POST" })
+    .then(response => response.json())
+    .then(data => {
+        button.textContent = data.status; // Update button text
+        updateFollowingList(); // Refresh the following list
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function updateFollowingList() {
+    fetch("/get_following_list") // API to fetch updated following list
+    .then(response => response.json())
+    .then(data => {
+        const followingContainer = document.getElementById("following-list");
+        followingContainer.innerHTML = "";
+
+        if (data.following.length === 0) {
+            followingContainer.innerHTML = "<p>You are not following anyone yet.</p>";
+            return;
+        }
+
+        data.following.forEach(user => {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `
+                <a href="/profile/${user.id}">
+                    <img src="/static/profile_pics/${user.profile_pic || 'default.png'}" 
+                         class="profile-pic" alt="Profile Picture">
+                    ${user.uname}
+                </a>
+            `;
+            followingContainer.appendChild(listItem);
+        });
+    })
+    .catch(error => console.error("Error updating following list:", error));
+}
+</script>
+</div>
+
+    <script>
+        function toggleLeftSidebar() {
+            document.getElementById("left-sidebar").classList.toggle("open");
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+        // Switch between view and edit mode
+        document.getElementById("edit-btn").onclick = function () {
+            const fields = document.querySelectorAll('.text-field');
+            const inputFields = document.querySelectorAll('.input-field');
+            const saveBtn = document.getElementById("save-btn");
+
+            // Toggle fields to make them editable
+            fields.forEach(field => field.style.display = 'none');
+            inputFields.forEach(field => field.style.display = 'block');
+
+            // Show save button and hide edit button
+            saveBtn.style.display = 'block';
+            document.getElementById("edit-btn").style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

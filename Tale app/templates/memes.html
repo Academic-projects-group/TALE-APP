@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Memes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <style>
+        /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+/* Header */
+h1 {
+    color: #444;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Meme Card */
+.meme-card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* Profile Section */
+.meme-card strong a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.profile-pic {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Meme Image */
+.meme-img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
+    transition: transform 0.3s ease-in-out;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.meme-img:hover {
+    transform: scale(1.02);
+}
+
+/* Timestamp */
+.post-time {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Caption */
+.caption {
+    font-size: 16px;
+    font-style: italic;
+    margin: 10px 0;
+}
+
+/* Like, Share, Comment Buttons */
+.story-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.story-buttons button {
+    background: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.story-buttons button:hover {
+    background: #0056b3;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 15px;
+    display: none;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.comments-list {
+    margin-top: 10px;
+}
+
+/* Follow Button */
+.follow-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.follow-btn:hover {
+    background: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .meme-card {
+        padding: 10px;
+    }
+
+    .story-buttons {
+        flex-direction: column;
+    }
+
+    .story-buttons button {
+        margin-bottom: 5px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    {% extends "upload.html" %}
+    {% block content %}
+    <h1>Uploaded Memes</h1>
+
+    <!-- Main Content -->
+    <div class="container">
+        {% if memes %}
+            {% for meme in memes %}
+                <div class="meme-card">
+                    <p>
+                        <strong>
+                            <a href="{{ url_for('profile1', user_id=meme.user.id) }}">
+                                <img src="{{ url_for('static', filename='profile_pics/' + (meme.user.profile_pic if meme.user.profile_pic else 'default.png')) }}"  
+                                class="profile-pic" alt="Profile Picture">
+                                {{ meme.user.uname }}
+                            </a>
+                        </strong>
+
+                        {% if current_user.id != meme.user.id %}
+                        <button class="follow-btn" id="follow-btn-{{ meme.user.id }}" 
+                            onclick="toggleFollow({{ meme.user.id }}, this)">
+                            {{ 'Following' if current_user.is_following(meme.user) else 'Follow' }}
+                        </button>
+                    {% endif %}
+                        <span class="post-time">
+                            {% if meme.timestamp %}
+                                {{ meme.timestamp.strftime('%B %d, %Y %I:%M %p') }}
+                            {% else %}
+                                No timestamp
+                            {% endif %}
+                        </span>
+                    </p>
+                    <div class="meme-post">
+                        <img src="{{ meme.file_path }}" alt="Meme Image" class="meme-img">
+                        <p class="caption">{{ meme.caption }}</p>
+                    </div>
+                    <p>Posted on: 
+                        {% if meme.timestamp %}
+                            {{ meme.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                        {% else %}
+                            Unknown Date
+                        {% endif %}
+                    </p>
+
+                    <!-- Like, Share, and Comment Section -->
+                    <div class="story-buttons">
+                        <button id="like-btn-{{ meme.id }}" onclick="likeMeme(this, {{ meme.id }}, '{{ current_user.uname }}')" 
+                        data-liked="{% if current_user in meme.likes %}true{% else %}false{% endif %}">
+                        {% if current_user in meme.likes %} 👎 Unlike {% else %} 👍 Like {% endif %}
+                    </button>
+                        <button onclick="shareMeme({{ meme.id }})">
+                            🔗 Share <span class="share-count-{{ meme.id }}">{{ meme.shares }}</span>
+                        </button>      
+                        <!-- Comment Button -->
+                        <!-- Comment Button -->
+<button onclick="toggleComments({{ meme.id }})">💬 Comment <span class="comment-count-{{ meme.id }}">{{ meme.comments | length }}</span></button>
+
+<!-- Comments Section -->
+
+
+                        </button>
+                        
+                        
+                    </div>
+                    <div class="options-container">
+                        <button class="more-options-button">⋮</button>
+                        <div class="options-menu" style="display: none;">
+                            <button class="save-meme">💾 Save</button>
+                            <button class="download-meme">⬇️ Download</button>
+                            <button class="hide-meme">🙈 Hide</button>
+                            <button class="report-meme">⚠️ Report</button>
+                        </div>
+                    </div>
+                     <!-- Comments Section -->
+                     <!-- Comment Section -->
+<div id="comments-section-{{ meme.id }}" class="comments-section" style="display: none;">
+    <textarea id="comment-input-{{ meme.id }}" class="comment-input" placeholder="Write a comment..."></textarea>
+    <button onclick="postComment({{ meme.id }}, '{{ current_user.uname }}')">Post Comment</button>
+    
+    <div class="comments-list" id="comments-list-{{ meme.id }}">
+        {% if meme.comments %}
+            {% for comment in meme.comments %}
+                <div class="comment">
+                    <strong>{{ comment.username }}:</strong> {{ comment.content }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+</div>
+
+                    <script>
+                        function toggleComments(memeId) {
+                            let commentSection = document.getElementById(`comments-section-${memeId}`);
+                            
+                            if (commentSection.style.display === "none") {
+                                commentSection.style.display = "block";
+                            } else {
+                                commentSection.style.display = "none";
+                            }
+                        }
+                        
+                            function likeMeme(button, memeId, username) {
+                                fetch(`/like/${memeId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ username: username })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.already_liked) {
+                                        alert("You already liked this meme! 👍");
+                                    } else if (data.liked) {
+                                        button.innerHTML = "👎 Unlike";
+                                        alert("You liked this meme! 👍");
+                                    } else {
+                                        button.innerHTML = "👍 Like";
+                                        alert("You unliked this meme! 👎");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert("Something went wrong! Please try again.");
+                                });
+                            }
+                          
+                                function shareMeme(memeId) {
+                                    fetch(`/share/${memeId}`, {
+                                        method: 'POST'
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        const shareCountElement = document.querySelector(`.share-count-${memeId}`);
+                                        if (shareCountElement) {
+                                            shareCountElement.innerText = data.shares;
+                                        }
+                                        alert("Meme shared successfully! 🔗");
+                                    })
+                                    .catch(error => {
+                                        console.error("Error:", error);
+                                        alert("Something went wrong! Please try again.");
+                                    });
+                                }
+                            
+                            
+                        
+                        
+
+                        
+                        
+                        
+                        // Toggle comment section visibility
+function toggleComments(memeId) {
+    let commentSection = document.getElementById(`comments-section-${memeId}`);
+    commentSection.style.display = (commentSection.style.display === "none") ? "block" : "none";
+}
+function postComment(memeId, username) {
+    let commentInput = document.getElementById(`comment-input-${memeId}`);
+    let commentText = commentInput.value.trim();
+
+    if (commentText === "") {
+        alert("Comment cannot be empty!");
+        return;
+    }
+
+    fetch(`/post_comment/${memeId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: username, content: commentText })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Server Response:", data);  // Debugging Log
+        if (data.success) {
+            let commentList = document.getElementById(`comments-list-${memeId}`);
+            let newComment = document.createElement("div");
+            newComment.classList.add("comment");
+            newComment.innerHTML = `<strong>${username}:</strong> ${commentText}`;
+            commentList.appendChild(newComment);
+
+            // Clear input field
+            commentInput.value = "";
+
+            // Update comment count
+            let commentCount = document.querySelector(`.comment-count-${memeId}`);
+            commentCount.textContent = parseInt(commentCount.textContent) + 1;
+        } else {
+            alert("Failed to post comment: " + data.message);
+        }
+    })
+    .catch(error => console.error("Error posting comment:", error));
+}
+
+
+
+
+ 
+                    </script>
+                    </div>
+                    
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; font-size: 18px;">No memes uploaded yet. Upload your first meme!</p>
+        {% endif %}
+    </div>
+
+<script>
+    function toggleFollow(userId, button) {
+        fetch(`/toggle_follow/${userId}`, { method: "POST" })
+            .then(response => response.json())
+            .then(data => {
+                button.textContent = data.status;
+                button.classList.toggle("following", data.status === "Following");
+            })
+            .catch(error => console.error("Error:", error));
+    }
+    function updateFollowingList() {
+        fetch("/get_following_list") // API to fetch updated following list
+        .then(response => response.json())
+        .then(data => {
+            const followingContainer = document.getElementById("following-list");
+            followingContainer.innerHTML = ""; // Clear current list
+    
+            if (data.following.length === 0) {
+                followingContainer.innerHTML = "<p>You are not following anyone yet.</p>";
+                return;
+            }
+    
+            // Append updated users to the list
+            data.following.forEach(user => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <a href="/profile/${user.id}">
+                        <img src="/static/profile_pics/${user.profile_pic || 'default.png'}" 
+                             class="profile-pic" alt="Profile Picture">
+                        ${user.uname}
+                    </a>
+                `;
+                followingContainer.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error("Error updating following list:", error));
+    }
+    function addNewMeme(meme) {
+        $(".meme-container").prepend(`
+            <div class="meme-post">
+                <img src="${meme.file_path}" alt="Meme Image" class="meme-img">
+                <p class="caption">${meme.caption}</p>
+            </div>
+        `);
+    }
+    
+    
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function addNewMeme(meme) {
+            const memeContainer = document.querySelector(".meme-container"); // Ensure this class exists
+            const newMeme = document.createElement("div");
+            newMeme.classList.add("meme-post");
+            newMeme.innerHTML = `
+                <img src="${meme.file_path}" alt="Meme Image" class="meme-img">
+                <p class="caption">${meme.caption}</p>
+            `;
+            memeContainer.prepend(newMeme); // Adds the new post at the top
+        }
+    
+        // Example usage:
+        addNewMeme({ file_path: "new-meme.jpg", caption: "Fresh meme on top!" });
+    });
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("click", (event) => {
+            const moreOptionsButton = event.target.closest(".more-options-button");
+            const optionsMenu = event.target.closest(".options-container")?.querySelector(".options-menu");
+    
+            // Toggle the options menu when clicking the "⋮" button
+            if (moreOptionsButton) {
+                optionsMenu.style.display = optionsMenu.style.display === "none" || optionsMenu.style.display === "" ? "block" : "none";
+                return;
+            }
+    
+            // Hide the menu when clicking outside
+            document.querySelectorAll(".options-menu").forEach(menu => {
+                if (!menu.contains(event.target)) {
+                    menu.style.display = "none";
+                }
+            });
+    
+            // Save Meme Action
+            if (event.target.closest(".save-meme")) {
+                alert("Meme saved!");
+            }
+    
+            // Download Meme Action (Actual local download)
+            if (event.target.closest(".download-meme")) {
+                const memeCard = event.target.closest(".meme-card");
+                const memeImage = memeCard.querySelector("img"); // Assuming the meme image is inside the card
+                
+                if (memeImage) {
+                    const imageUrl = memeImage.src; // Get the image URL
+                    const link = document.createElement("a");
+                    link.href = imageUrl;
+                    link.download = "meme.jpg"; // Set the file name
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    alert("Meme image not found!");
+                }
+            }
+    
+            // Hide Meme Action
+            if (event.target.closest(".hide-meme")) {
+                const memeCard = event.target.closest(".meme-card");
+                if (memeCard) memeCard.style.display = "none";
+            }
+    
+            // Report Meme Action
+            if (event.target.closest(".report-meme")) {
+                alert("Meme reported successfully!");
+            }
+        });
+    });
+    
+       
+</script>
+{% endblock %}
+</body>
+</html>

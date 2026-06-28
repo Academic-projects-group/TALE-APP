@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Rules & Instructions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: #f0f4f8;
+            color: #333;
+            animation: fadeIn 1s ease-in;
+        }
+
+        header {
+            background-color: #0077ff;
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            animation: slideUp 1.2s ease-out;
+        }
+
+        h2 {
+            color: #0077ff;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #0077ff;
+            padding-bottom: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-left: 5px solid #0077ff;
+            border-radius: 5px;
+            font-size: 16px;
+            position: relative;
+            animation: fadeInUp 0.5s ease-in-out;
+        }
+
+        li i {
+            color: #0077ff;
+            margin-right: 10px;
+        }
+
+        .tip {
+            font-style: italic;
+            color: #555;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #222;
+            color: #fff;
+            margin-top: 40px;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    {% extends "upload.html" %}
+
+    {% block content %}
+
+    <h1>📜 Platform Rules & Instructions</h1>
+
+
+<div class="container">
+    <h2>Basic Rules</h2>
+    <ul>
+        <li><i class="fas fa-check-circle"></i> Be respectful to all users and their content.</li>
+        <li><i class="fas fa-check-circle"></i> No hate speech, discrimination, or offensive material.</li>
+        <li><i class="fas fa-check-circle"></i> Only upload original or royalty-free content.</li>
+        <li><i class="fas fa-check-circle"></i> Use proper language in public stories and comments.</li>
+        <li><i class="fas fa-check-circle"></i> No spam, repeated messages, or fake promotions.</li>
+    </ul>
+
+    <h2>How to Use the Platform</h2>
+    <ul>
+        <li><i class="fas fa-pencil-alt"></i> Write stories using the "Create Stories" section.</li>
+        <li><i class="fas fa-headphones-alt"></i> Listen to audio stories in the "Listen" section.</li>
+        <li><i class="fas fa-users"></i> View other users and interact on the "Profile" page.</li>
+        <li><i class="fas fa-gamepad"></i> Play and enjoy fun games in the "Games" section.</li>
+        <li><i class="fas fa-comment"></i> Comment and react to your favorite stories and memes.</li>
+    </ul>
+
+    <div class="tip">
+        ✨ <strong>Tip:</strong> Make your profile stand out with an avatar, bio, and your top story!
+    </div>
+</div>
+
+<footer>
+ <a href="/home">Back to Home</a>
+</footer>
+
+<script>
+    // Optional: Add fade-in on scroll for each rule
+    const items = document.querySelectorAll("li");
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = "fadeInUp 0.6s ease forwards";
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    items.forEach(item => observer.observe(item));
+</script>
+{% endblock %}
+
+</body>
+</html>

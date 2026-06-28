@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram-like Account Settings</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            
+        }
+        .container {
+            padding: 30px;
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Header */
+        header {
+            background-color: #0077ff;
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+    header .logo {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    header nav a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 15px;
+        font-size: 16px;
+    }
+
+    header nav a:hover {
+        text-decoration: underline;
+    }
+
+     /* Sidebar Styling */
+     .left-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 200px;
+        height: 100%;
+        background-color: #222;
+        color: #fff;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        transform: translateX(-260px);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .left-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .back-arrow {
+        font-size: 24px;
+        cursor: pointer;
+        color: #fff;
+        background: none;
+        border: none;
+    }
+
+    .left-sidebar a {
+        display: block;
+        color: #fff;
+        text-decoration: none;
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        background: #444;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .left-sidebar a:hover {
+        background: #0077ff;
+    }
+
+    .sidebar-toggle {
+        background-color: #005bb5;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        width: unset;
+    }
+
+    .sidebar-toggle:hover {
+        background-color: #004699;
+    }
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            display: block;
+            background-color: #0077ff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .dark-mode-toggle:hover {
+            background: #005bb5;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .setting {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, select, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        button {
+            background: linear-gradient(135deg, #0095f6, #0077c2);
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #0077c2, #005fa3);
+            transform: scale(1.05);
+        }
+        select, textarea {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+     <!-- Header -->
+     <header>
+        <button class="sidebar-toggle" onclick="toggleLeftSidebar()">☰ Menu</button>
+        <div class="logo">Story Platform</div>
+        <nav>
+            <a href="/home">Home</a>
+            <a href="/upload_meme">Explore</a>
+            <a href="/profile">Profile</a>
+            <a href="/">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Full Left Sidebar -->
+    <div class="left-sidebar" id="left-sidebar">
+        <div class="sidebar-header">
+            <button class="back-arrow" onclick="toggleLeftSidebar()">⬅</button>
+        </div>
+        <a href="/story">📚 Stories</a>
+        <a href="/memes">😂 Memes</a>
+        <a href="/story1">🎤 Singing Competition</a>
+        <a href="/index">📂 Saved Stories</a>
+        <a href="/settings">⚙️ Account Settings</a>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </div>
+
+
+    <div class="container">
+        <h2>Settings</h2>
+        
+        <div class="setting">
+            <label for="privacy">Privacy</label>
+            <select id="privacy">
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+            </select>
+        </div>
+
+        <div class="setting">
+            <label for="liked">Your Liked Posts</label>
+            <textarea id="liked" rows="3" placeholder="Liked posts will appear here" readonly></textarea>
+        </div>
+
+        <div class="setting">
+            <label for="history">Search History</label>
+            <textarea id="history" rows="3" placeholder="Your recent searches will appear here" readonly></textarea>
+            <button onclick="clearHistory()">Clear History</button>
+        </div>
+
+        <div class="setting">
+            <label for="notifications">Notifications</label>
+            <select id="notifications">
+                <option value="on">On</option>
+                <option value="off">Off</option>
+            </select>
+        </div>
+
+        <div class="setting">
+            <label for="theme">Theme</label>
+            <select id="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+            </select>
+        </div>
+
+        <div class="setting">
+            <label for="saved">Saved Posts</label>
+            <textarea id="saved" rows="3" placeholder="Your saved posts will appear here" readonly></textarea>
+        </div>
+        
+        <div class="setting">
+            <label for="blocklist">Blocked Accounts</label>
+            <textarea id="blocklist" rows="3" placeholder="Blocked users will appear here" readonly></textarea>
+        </div>
+        
+        <div class="setting">
+            <label for="twofactor">Two-Factor Authentication</label>
+            <select id="twofactor">
+                <option value="enabled">Enabled</option>
+                <option value="disabled">Disabled</option>
+            </select>
+        </div>
+        
+        <div class="setting">
+            <label for="email">Email Notifications</label>
+            <select id="email">
+                <option value="on">On</option>
+                <option value="off">Off</option>
+            </select>
+        </div>
+        
+        <div class="setting">
+            <label for="language">Language</label>
+            <select id="language">
+                <option value="english">English</option>
+                <option value="spanish">Spanish</option>
+                <option value="french">French</option>
+                <option value="german">German</option>
+            </select>
+        </div>
+        
+        <div class="setting">
+            <label for="activity">Last Active Status</label>
+            <select id="activity">
+                <option value="visible">Visible</option>
+                <option value="hidden">Hidden</option>
+            </select>
+        </div>
+
+        <div class="setting">
+            <button onclick="saveSettings()">Save Settings</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleLeftSidebar() {
+            document.getElementById("left-sidebar").classList.toggle("open");
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSettings();
+        
+            document.querySelector('button[onclick="saveSettings()"]').addEventListener('click', saveSettings);
+            document.querySelector('button[onclick="clearHistory()"]').addEventListener('click', clearHistory);
+        });
+        
+        async function loadSettings() {
+            try {
+                const response = await fetch('/get-settings');
+                const settings = await response.json();
+        
+                document.getElementById('privacy').value = settings.privacy;
+                document.getElementById('liked').value = settings.liked;
+                document.getElementById('history').value = settings.history;
+                document.getElementById('notifications').value = settings.notifications;
+                document.getElementById('theme').value = settings.theme;
+                document.getElementById('saved').value = settings.saved;
+                document.getElementById('blocklist').value = settings.blocklist;
+                document.getElementById('twofactor').value = settings.twofactor;
+                document.getElementById('email').value = settings.email;
+                document.getElementById('language').value = settings.language;
+                document.getElementById('activity').value = settings.activity;
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+        
+        async function saveSettings() {
+            const settings = {
+                privacy: document.getElementById('privacy').value,
+                liked: document.getElementById('liked').value,
+                history: document.getElementById('history').value,
+                notifications: document.getElementById('notifications').value,
+                theme: document.getElementById('theme').value,
+                saved: document.getElementById('saved').value,
+                blocklist: document.getElementById('blocklist').value,
+                twofactor: document.getElementById('twofactor').value,
+                email: document.getElementById('email').value,
+                language: document.getElementById('language').value,
+                activity: document.getElementById('activity').value
+            };
+        
+            try {
+                const response = await fetch('/save-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error('Error saving settings:', error);
+            }
+        }
+        
+        async function clearHistory() {
+            try {
+                const response = await fetch('/clear-history', { method: 'POST' });
+                const result = await response.json();
+                document.getElementById('history').value = "";
+                alert(result.message);
+            } catch (error) {
+                console.error('Error clearing history:', error);
+            }
+        }
+        
+    </script>
+</body>
+</html>

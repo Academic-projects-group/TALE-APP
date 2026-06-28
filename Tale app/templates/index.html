@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        /* Header */
+        header {
+            background-color: #0077ff;
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            background-color: #f8f8f8;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50% ;
+            
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 15px;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .meme-img {
+          
+            margin-left: auto;
+            margin-right: auto;
+            height: 50%;
+
+            display: block;
+            width: 50%;
+        }
+
+        .caption {
+            margin: 10px 0;
+            font-size: 20px;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .actions button {
+            background-color: #0077ff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .actions button:hover {
+            background-color: #005bb5;
+        }
+        /* Header Styling */
+        header {
+            background-color: #0077ff;
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 15px;
+            font-size: 16px;
+        }
+
+        header nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Sidebar Styling */
+        .left-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            transform: translateX(-260px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .left-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+            background: none;
+            border: none;
+        }
+
+        .left-sidebar a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background: #444;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .left-sidebar a:hover {
+            background: #0077ff;
+        }
+
+        .sidebar-toggle {
+            background-color: #005bb5;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: #004699;
+        }
+        /* Profile Picture Styles */
+        .profile-pic {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .story-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .story-buttons button {
+            background-color: #e0e0e0;
+            color: black;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .story-buttons button:hover {
+            background-color: #d0d0d0;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+   <!-- Header -->
+   <header>
+    <button class="sidebar-toggle" onclick="toggleLeftSidebar()">☰ Menu</button>
+    <div class="logo">Story Platform</div>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/upload_meme">Explore</a>
+        <a href="/profile">Profile</a>
+        <a href="/">Logout</a>
+    </nav>
+</header>
+
+<!-- Full Left Sidebar -->
+<div class="left-sidebar" id="left-sidebar">
+    <div class="sidebar-header">
+        <button class="back-arrow" onclick="toggleLeftSidebar()">⬅</button>
+    </div>
+    <a href="/story">📚 Stories</a>
+    <a href="/memes">😂 Memes</a>
+    <a href="/story1">🎤 Singing Competition</a>
+    <a href="/index">📂 Saved Stories</a>
+    <a href="/settings">⚙ Account Settings</a>
+</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Children's Fun Page</title>
+    <style>
+        body {
+            text-align: center;
+            background: url('https://th.bing.com/th/id/R.c38976f988549c58e1aeecab77796d76?rik=5jypVdZ8kDPOVQ&riu=http%3a%2f%2fwww.clipartbest.com%2fcliparts%2faiq%2fLnk%2faiqLnkX4T.gif&ehk=o62ubQK9O%2f6Vt8XW0PK84We1%2fav64WmMiuEbNcSYuZ8%3d&risl=&pid=ImgRaw&r=0') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 100px;
+            height: 100%;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #ffcc00;
+        }
+        button:hover {
+            background-color: #ff9900;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background:transparent;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+            border-radius: 10px;
+            width: 80%;
+            height: 100%;
+            text-align: center;
+            overflow: auto;
+        }
+        .close {
+    float: right;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;               /* Make the close button white */
+    background: rgba(0, 0, 0, 0.6);  /* Add a subtle background */
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.close:hover {
+    background: red;           /* Highlight effect on hover */
+    color: white;
+}
+        iframe {
+            width: 100%;
+            height: 45%;
+            border: none;
+            margin: 10px 0;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+        <h1>Welcome Little Explorers!</h1>
+    <div class="container">
+        <a href="/home"><button>Home</button></a>
+        <!--<button onclick="showContent('games')">Games</button>-->
+        <!--<button onclick="showContent('videos')">Videos</button>-->
+        <a href="/videos"><button>videos</button></a>
+        <a href="/games"><button>Games</button></a>
+        <a href="/music"><button>Music</button></a>
+        <a href="/sing"><button>Sing</button></a>
+        <!--<button onclick="showContent('music')">Music</button>-->
+    </div>
+    
+    <div id="modal-overlay" class="modal-overlay">
+        <div id="modal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+    
+    <script>
+        function showContent(type) {
+            if (type === 'games') {
+        document.body.style.background = "url('https://i.pinimg.com/originals/ed/77/3e/ed773e81dfb2fc357036cf5048efb14a.gif') no-repeat center center fixed";
+        document.body.style.backgroundSize = "cover";
+    }else if (type === 'videos') {
+        // Background for Videos
+        document.body.style.background = "url('https://media.tenor.com/0resdUbZB9MAAAAC/pixel-aesthetic.gif') no-repeat center center fixed";
+        document.body.style.backgroundSize = "cover";
+    } else if (type === 'music') {
+        // Background for Videos
+        document.body.style.background = "url('https://www.bing.com/th/id/OGC.0405a2b3932f748ee466400eb53273db?pid=1.7&rurl=https%3a%2f%2fi.pinimg.com%2foriginals%2fc6%2fc1%2f1d%2fc6c11d8ba0b9f26caf0a6a8ee3a3e78e.gif&ehk=p7VNYb9LVgkiAk8Vqc4Ew2uhfO%2fL0LgkFQ4IVx1jfSE%3d') no-repeat center center fixed";
+        document.body.style.backgroundSize = "cover";
+    } 
+    else {
+        document.body.style.background = "url('https://th.bing.com/th/id/R.c38976f988549c58e1aeecab77796d76?rik=5jypVdZ8kDPOVQ&riu=http%3a%2f%2fwww.clipartbest.com%2fcliparts%2faiq%2fLnk%2faiqLnkX4T.gif&ehk=o62ubQK9O%2f6Vt8XW0PK84We1%2fav64WmMiuEbNcSYuZ8%3d&risl=&pid=ImgRaw&r=0') no-repeat center center fixed";
+        document.body.style.backgroundSize = "cover";
+    }
+            let content = '';
+            if (type === 'games') {
+                content = '<h2>Fun Games</h2><ul>' +
+                          '<li><button onclick="loadGame(\'https://funhtml5games.com?embed=flappy\')">Flappy Bird</button></li>' +
+                          '<li><button onclick="loadGame(\'https://funhtml5games.com?embed=snake\')">Snake Game</button></li>' +
+                          '<li><button onclick="loadGame(\'https://funhtml5games.com?embed=tetris\')">Tetris</button></li>' +
+                          '</ul>';
+            } else if (type === 'videos') {
+                content = '<h2>Children Rhymes & Stories</h2>' +
+                          '<iframe src="https://www.youtube.com/embed/yCjJyiqpAuU" allowfullscreen></iframe>' +
+                          '<iframe src="https://www.youtube.com/embed/HI0x0KYChq4" allowfullscreen></iframe>' +
+                          '<iframe src="https://www.youtube.com/embed/5o_Pb6FvJb8" allowfullscreen></iframe>' +
+                          '<iframe src="https://www.youtube.com/embed/wlXIBwM9YMU" allowfullscreen></iframe>' +
+                          '<iframe src="https://www.youtube.com/embed/J3iJwgjJpxg" allowfullscreen></iframe>';
+            } else if (type === 'music') {
+                content = '<h2>Children Songs & Stories</h2>' +
+                          '<p>The Wheels on the Bus</p><audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3"></audio>' +
+                          '<p>Five Little Ducks</p><audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mp3"></audio>' +
+                          '<p>Bedtime Story</p><audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mp3"></audio>';
+            } else {
+                content = '<h2>Welcome to the Children\'s Fun Page!</h2>';
+            }
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('modal-overlay').style.display = 'block';
+        }
+        
+        function loadGame(url) {
+            document.getElementById('modal-content').innerHTML = '<iframe src="' + url + '" allowfullscreen></iframe>';
+        }
+        
+        function closeModal() {
+    document.getElementById('modal-overlay').style.display = 'none';
+
+    // Reset the background to the default image
+    document.body.style.background = "url('https://th.bing.com/th/id/R.c38976f988549c58e1aeecab77796d76?rik=5jypVdZ8kDPOVQ&riu=http%3a%2f%2fwww.clipartbest.com%2fcliparts%2faiq%2fLnk%2faiqLnkX4T.gif&ehk=o62ubQK9O%2f6Vt8XW0PK84We1%2fav64WmMiuEbNcSYuZ8%3d&risl=&pid=ImgRaw&r=0') no-repeat center center fixed";
+    document.body.style.backgroundSize = "cover";
+}
+function toggleLeftSidebar() {
+    document.getElementById("left-sidebar").classList.toggle("open");
+}
+
+
+        
+    </script>
+</body>
+</html>
+ 

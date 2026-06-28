@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Singing Recorder with Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .controls button, .controls input, .controls select {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .recording {
+      margin-top: 20px;
+      background: #eee;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .actions button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  {% extends "upload.html" %}
+
+  {% block content %}
+  <div class="container">
+    <h1>Singing Recorder</h1>
+
+    <div class="controls">
+      <input type="text" id="username" placeholder="Your name" required />
+      <select id="music">
+        <option value="bg1.mp3">bg1.mp3</option>
+        <option value="bg2.mp3">bg2.mp3</option>
+      </select>
+      <input type="range" id="volume" min="0" max="100" value="50" />
+      <label for="volume">Volume</label>
+      <br/>
+      <button id="recordBtn">Start Recording</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <button id="postBtn" disabled>Post & Upload</button>
+    </div>
+
+    <div id="songList">
+      <h2>My Recordings</h2>
+    </div>
+
+    <div id="uploadResult"></div>
+  </div>
+
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let audioBlob;
+
+    const recordBtn = document.getElementById('recordBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const postBtn = document.getElementById('postBtn');
+    const songList = document.getElementById('songList');
+    const uploadResult = document.getElementById('uploadResult');
+
+    recordBtn.addEventListener('click', async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+      mediaRecorder.onstop = () => {
+        audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        postBtn.disabled = false;
+      };
+
+      mediaRecorder.start();
+      recordBtn.disabled = true;
+      stopBtn.disabled = false;
+    });
+
+    stopBtn.addEventListener('click', () => {
+      mediaRecorder.stop();
+      recordBtn.disabled = false;
+      stopBtn.disabled = true;
+    });
+
+    postBtn.addEventListener('click', async () => {
+      const username = document.getElementById('username').value.trim();
+      const music = document.getElementById('music').value;
+      const volume = document.getElementById('volume').value;
+
+      if (!username) {
+        alert("Please enter your name.");
+        return;
+      }
+
+      const audioURL = URL.createObjectURL(audioBlob);
+      const audioElement = document.createElement('audio');
+      audioElement.controls = true;
+      audioElement.src = audioURL;
+      songList.appendChild(audioElement);
+
+      // Upload
+      const formData = new FormData();
+      formData.append("file", audioBlob, "recording.webm");
+      formData.append("music", music);
+      formData.append("volume", volume);
+      formData.append("username", username);
+
+      try {
+        const response = await fetch("/upload2", {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await response.json();
+        if (result.error) {
+          uploadResult.innerHTML = `<p style="color:red;">Error: ${result.error}</p>`;
+        } else {
+          uploadResult.innerHTML = `
+            <p><strong>Mixed file:</strong> <a href="/download/${result.filename}" target="_blank">${result.filename}</a></p>
+            <p><strong>Lyrics:</strong> ${result.lyrics}</p>
+          `;
+        }
+      } catch (err) {
+        uploadResult.innerHTML = `<p style="color:red;">Upload failed: ${err}</p>`;
+      }
+
+      postBtn.disabled = true;
+    });
+
+    // Load previously uploaded recordings on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      const response = await fetch('/recordings');
+      const data = await response.json();
+      data.recordings.forEach(recording => {
+        addRecordingItem(recording.filename, recording.lyrics);
+      });
+    });
+
+    function addRecordingItem(filename, lyrics) {
+      const container = document.createElement('div');
+      container.className = 'recording';
+
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = `/download/${filename}`;
+
+      const downloadBtn = document.createElement('a');
+      downloadBtn.href = `/download/${filename}`;
+      downloadBtn.download = filename;
+      downloadBtn.textContent = "Download";
+      downloadBtn.className = "button";
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = "Delete";
+      deleteBtn.onclick = () => {
+        deleteRecording(filename);
+        container.remove();
+      };
+
+      const lyricsEl = document.createElement('p');
+      lyricsEl.innerHTML = `<strong>Lyrics:</strong> ${lyrics}`;
+
+      const actionBar = document.createElement('div');
+      actionBar.className = 'actions';
+      actionBar.appendChild(downloadBtn);
+      actionBar.appendChild(deleteBtn);
+
+      container.appendChild(audio);
+      container.appendChild(actionBar);
+      container.appendChild(lyricsEl);
+
+      songList.appendChild(container);
+    }
+
+    async function deleteRecording(filename) {
+      try {
+        const response = await fetch(`/delete/${filename}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+          alert('Recording deleted successfully');
+        } else {
+          alert('Error deleting recording');
+        }
+      } catch (err) {
+        alert('Error deleting recording: ' + err);
+      }
+    }
+  </script>
+  {% endblock %}
+</body>
+</html>

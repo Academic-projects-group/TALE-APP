@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreativePen</title>
+    <style>
+        /* Global Styles */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: url('https://wallpapercave.com/wp/wp9365408.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgb(243, 242, 246);
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 5px 8px 20px rgba(9, 9, 9, 0.15);
+            background-color: rgba(2, 136, 199, 0.85);
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: none;
+            padding: 30px 40px;
+        }
+
+        .card-header h3 {
+            color: #f3f2f6;
+            font-weight: 700;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .card-body {
+            padding: 30px 40px;
+        }
+
+        .form-control {
+            border-radius: 25px;
+            padding: 12px 20px;
+            box-shadow: black;
+            border: 1px solid #010305;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #ddd9e2;
+            box-shadow: 0 0 8px rgba(4, 1, 6, 0.1);
+        }
+
+        .form-group {
+            padding: 10px;
+            font-family: 'Titillium Web', sans-serif;
+            text-align: left;
+        }
+
+        .form-check-label, .small a {
+            font-size: 15px;
+            color: #f7f0f0;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: #e7e7eddd;
+            border: none;
+            border-radius: 15px;
+            padding: 10px 10px;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .btn-primary:hover {
+            background-color: #f4f4f9;
+        }
+
+        .card-footer {
+            padding: 20px;
+            background-color: transparent;
+            border-top: none;
+            text-align: center;
+        }
+        /* sign up */
+        .small a {
+            color: #f1f1f1f8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 20px;
+            margin-top: 10px;
+            padding: auto;
+            
+        }
+        /* sign up click*/
+        .small a:hover {
+            color: #dedde1;
+            text-decoration: underline;
+            width: 90%;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 576px) {
+            .card {
+                margin: 0 15px;
+            }  
+            .card-header, .card-body {
+                padding: 20px;
+            }
+        }
+        .flash-message {
+            margin: 10px auto;
+            padding: 15px;  /* Increase padding for better spacing */
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: opacity 0.5s ease-in-out; /* Smooth fade effect */
+        }
+        .flash-message.success {
+            background-color: #4CAF50; /* Green background for success */
+            color: #fff; /* White text */
+            border: 1px solid #388E3C; /* Darker green border */
+            width: 80%;
+        }
+        
+        .flash-message.error {
+            background-color: #f44336; /* Red background for error */
+            color: #fff; /* White text */
+            border: 1px solid #C62828; /* Darker red border */
+            width: 80%;
+        }
+
+    </style>
+
+    <script>
+        // JavaScript function to handle form submission with validation
+        function validateLogin(event) {
+            const username = document.getElementById('loginuname').value;
+            const password = document.getElementById('loginpass').value;
+
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+                event.preventDefault();
+                return false;
+            }
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long.');
+                event.preventDefault();
+                return false;
+            }
+        }
+
+        // Remember password function
+        function handleRememberMe() {
+            const username = document.getElementById('loginuname').value;
+            const password = document.getElementById('loginpass').value;
+            const remember = document.getElementById('rememberPasswordCheck').checked;
+
+            if (remember) {
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+                localStorage.setItem('remember', 'true');
+            } else {
+                localStorage.removeItem('username');
+                localStorage.removeItem('password');
+                localStorage.setItem('remember', 'false');
+            }
+        }
+
+        window.onload = function() {
+            const remembered = localStorage.getItem('remember');
+            if (remembered === 'true') {
+                document.getElementById('loginuname').value = localStorage.getItem('username');
+                document.getElementById('loginpass').value = localStorage.getItem('password');
+                document.getElementById('rememberPasswordCheck').checked = true;
+            }
+        };
+    </script>
+</head>
+<>
+    <div class="container">\
+        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-message {{  'error' }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-header">
+                        <h3 class="text-center font-weight-light my-4">TALE Login</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form id="loginForm" action="/handlelogin/" method="POST" onsubmit="validateLogin(event)">
+                            <div class="form-group">
+                                <label for="loginuname">Username</label>
+                                <input class="form-control" id="loginuname" name="loginuname" type="text" placeholder="Enter username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginpass">Password</label>
+                                <input class="form-control" id="loginpass" name="loginpass" type="password" placeholder="Enter password" required>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="rememberPasswordCheck" type="checkbox" onclick="handleRememberMe()">
+                                    <label class="form-check-label" for="rememberPasswordCheck">Remember password</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        <div class="small"><a href="/reset">Forgot Password?</a></div>
+                        <div class="small"><a href="/register">Need an account? Sign up!</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

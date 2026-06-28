@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Games</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #ff5733;
+        }
+        .games-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .game {
+            width: 200px;
+            margin: 10px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .games-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff5733;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    {% extends "upload.html" %}
+
+    {% block content %}
+    <h1>Fun Games for Kids</h1>
+    <a href="/games" class="games-button">Games</a>
+    <a href="/index" class="games-button">Back</a>
+    <div class="games-container">
+        <script>
+            const games = [
+                { name: 'Tic-Tac-Toe', url: 'https://playtictactoe.org/' },
+                { name: 'Guess the Number', url: 'javascript:guessNumber()' },
+                { name: 'Memory Game', url: 'https://www.memozor.com/memory-games/online-free' },
+                { name: 'Snake Game', url: 'https://playsnake.org/' },
+                { name: 'Rock Paper Scissors', url: 'https://www.rpsgame.org/' },
+                { name: 'Flappy Bird', url: 'https://flappybird.io/' },
+                { name: '2048', url: 'https://play2048.co/' },
+                { name: 'Pacman', url: 'https://www.google.com/logos/2010/pacman10-i.html' },
+                { name: 'Sudoku', url: 'https://www.websudoku.com/' },
+                { name: 'Minesweeper', url: 'https://minesweeper.online/' },
+                { name: 'Chess', url: 'https://www.chess.com/play' },
+                { name: 'Checkers', url: 'https://cardgames.io/checkers/' },
+                { name: 'Word Search', url: 'https://thewordsearch.com/' },
+                { name: 'Bubble Shooter', url: 'https://www.bubbleshooter.net/' },
+                { name: 'Hangman', url: 'https://www.hangmanwords.com/play' },
+                { name: 'Simon Says', url: 'https://www.elanlearning.com/simon-says/' },
+                { name: 'Crossword Puzzle', url: 'https://www.boatloadpuzzles.com/playcrossword' },
+                { name: 'Find the Difference', url: 'https://www.spotthedifference.com/' },
+                { name: 'Mahjong', url: 'https://www.247mahjong.com/' },
+                { name: 'Connect Four', url: 'https://papergames.io/en/connect4' },
+                { name: 'Jigsaw Puzzle', url: 'https://www.jigsawplanet.com/' },
+                { name: 'Color Matching', url: 'https://www.coolmathgames.com/0-color-match' },
+                { name: 'Cooking Game', url: 'https://www.cookinggames.com/' },
+                { name: 'Fishing Game', url: 'https://play.fishington.io/' },
+                { name: 'Typing Challenge', url: 'https://www.typing.com/student/typing-test/1-minute' },
+                { name: 'Drawing Pad', url: 'https://kleki.com/' },
+                { name: 'Fruit Ninja Clone', url: 'https://www.crazygames.com/game/fruit-slasher' },
+                { name: 'Basketball Shoot', url: 'https://www.crazygames.com/game/basketball-legends' },
+                { name: 'Doodle Jump', url: 'https://www.doodlejump-online.com/' },
+                { name: 'Escape Room', url: 'https://www.crazygames.com/game/escape-room' },
+                { name: 'Space Invaders', url: 'https://www.freeinvaders.org/' },
+                { name: 'Farm Management', url: 'https://www.goodgamebigfarm.com/' },
+                { name: 'City Builder', url: 'https://www.crazygames.com/game/idle-city-builder' },
+                { name: 'Dress Up Game', url: 'https://www.girlsgogames.com/games/dress-up' },
+                { name: 'Traffic Control', url: 'https://www.crazygames.com/game/traffic-run' }
+            ];
+
+            games.forEach((game) => {
+                document.write(`<div class='game' onclick='window.location.href="${game.url}"'>${game.name}</div>`);
+            });
+
+            function guessNumber() {
+                let number = Math.floor(Math.random() * 10) + 1;
+                let guess;
+                while (guess != number) {
+                    guess = prompt('Guess a number between 1 and 10:');
+                    if (guess == number) {
+                        alert('Correct! You guessed the number.');
+                    } else {
+                        alert('Try again!');
+                    }
+                }
+            }
+        </script>
+    </div>
+    {% endblock %}
+</body>
+</html>

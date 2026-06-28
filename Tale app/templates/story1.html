@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sing & Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #ff758c, #ff7eb3);
+    color: white;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+button {
+    background: #ff007f;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.lyrics-section {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    font-size: 18px;
+}
+
+    </style>
+</head>
+<body>
+    {% extends "upload.html" %}
+    {% block content %}
+    <div class="container">
+        <h1>🎤 Sing & Upload Your Song 🎶</h1>
+
+        <h2>Record Your Voice</h2>
+        <button id="recordButton">🎙 Start Recording</button>
+        <button id="stopButton" disabled>⏹ Stop Recording</button>
+        <p id="recordStatus"></p>
+        <canvas id="visualizer"></canvas>
+        <audio id="recordedAudio" controls style="display: none;"></audio>
+
+        <h2>Choose Background Music</h2>
+        <select id="musicSelect">
+            {% for music in music_files %}
+                <option value="{{ music }}">{{ music }}</option>
+            {% endfor %}
+        </select>
+        <label for="musicVolume">Volume: </label>
+        <input type="range" id="musicVolume" min="0" max="100" value="50">
+
+        <h2>Upload & Mix</h2>
+        <input type="file" id="fileInput" accept="audio/*">
+        <button onclick="uploadFile()">Upload & Mix</button>
+        <p id="status"></p>
+
+        <h2>Lyrics Detected</h2>
+        <div id="lyricsBox" class="lyrics-section">Lyrics will appear here...</div>
+
+        <h2>Final Mixed Audio</h2>
+        <audio id="audioPlayer" controls style="display: none;"></audio>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById("recordButton").addEventListener("click", async () => {
+            let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+            document.getElementById("recordStatus").innerText = "🎤 Recording...";
+            document.getElementById("stopButton").disabled = false;
+
+            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+        });
+
+        document.getElementById("stopButton").addEventListener("click", () => {
+            mediaRecorder.stop();
+            document.getElementById("recordStatus").innerText = "✅ Recording stopped.";
+            document.getElementById("stopButton").disabled = true;
+
+            mediaRecorder.onstop = () => {
+                let audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
+                let audioUrl = URL.createObjectURL(audioBlob);
+                document.getElementById("recordedAudio").src = audioUrl;
+                document.getElementById("recordedAudio").style.display = "block";
+                document.getElementById("fileInput").files = [new File([audioBlob], "recorded.mp3")];
+            };
+        });
+
+        function uploadFile() {
+            let fileInput = document.getElementById("fileInput").files[0];
+            let selectedMusic = document.getElementById("musicSelect").value;
+            let musicVolume = document.getElementById("musicVolume").value;
+
+            if (!fileInput) {
+                alert("Please record or select a file.");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", fileInput);
+            formData.append("music", selectedMusic);
+            formData.append("volume", musicVolume);
+
+            fetch("/upload", { method: "POST", body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById("status").innerText = "✅ Processing complete! Download your mixed song:";
+                        let audioPlayer = document.getElementById("audioPlayer");
+                        audioPlayer.src = "/download/" + data.filename;
+                        audioPlayer.style.display = "block";
+                        document.getElementById("lyricsBox").innerText = data.lyrics || "No lyrics detected.";
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    </script>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #04032a 0%, #2575fc 100%);
+            height: 200vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            margin: 10px;   
+        }
+
+        .container {
+            max-width: 700px;
+            padding: 20px; 
+        }
+
+        /* Full page background wallpaper */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+           /* background: url('https://i.gifer.com/J4o.gif') no-repeat center center fixed;*/ /* Replace with your wallpaper image URL */
+           background: url('https://www.agbt.org/wp-content/uploads/2020/06/banner-gm-apply-min.png') no-repeat center center fixed; 
+           background-size: cover; /* Cover the whole background */
+            color: rgb(233, 241, 233);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /*entire container*/
+        .card {
+            border: none;
+            width: auto;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 15px rgba(227, 13, 13, 0.1); /* Soft shadow */
+            background: rgba(56, 145, 183, 0.9); /* Semi-transparent background for the card */
+        }
+
+        .card-header {
+            background-color: #349893; /* Darker header for contrast */
+            color: rgb(31, 5, 201); /* White text for readability */
+            text-align: center;
+            font-size: 15px;    
+            border-radius: 8px;    
+            width: auto;
+            padding: 15px; /* Padding for spacing */   
+        }
+
+        .card-body {
+            padding: 10px; /* Padding for the card body */
+        }
+
+        .form-group {
+            margin-bottom: 5px; /* Space between form groups */
+        }
+
+        .form-group input, select {
+            width: 90%;
+            padding: 5px;
+            border: 1px solid #ece6e6;
+            border-radius: 5px;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 10px;
+        }
+
+        .form-group label {
+            font-weight: bold; /* Bold labels */
+            font-size: large;
+            
+            width: 100%;
+        }
+
+        .form-control {
+            border: 1px solid #ced4da; /* Light gray border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px; /* Padding for input fields */
+            width: 100%; /* Full width */
+            transition: border-color 0.3s; /* Smooth transition on focus */
+        }
+
+        .form-control:focus {
+            border-color: #e1a610; /* Highlight border on focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Shadow effect on focus */
+        }
+
+        .btn {
+            text-align: center;
+        }
+
+        .btn button {
+            background-color: #2505b2;
+            color: rgb(251, 247, 247);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn button:hover {
+            background-color: #2b09e9;
+        }
+
+        .card-footer {
+            background-color: transparent; /* Transparent footer */
+            text-align: center; /* Centered text */
+            padding: 10px; /* Padding for footer */
+        }
+
+        .small {
+            font-size: 17px; /* Smaller font size for links */
+            color: #f4efef; /* Gray color for links */
+        }
+
+        .small a {
+            text-decoration: none; /* No underline */    
+        }
+
+        .small a:hover {
+            text-decoration: underline; /* Underline on hover */  
+        }
+
+        /* Flash Messages Styling */
+        .alert {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            color: white;
+            text-align: center;
+        }
+
+        .alert.success {
+            background-color: #0fc615; /* Green */
+        }
+
+        .alert.error {
+            background-color: #f44336; /* Red */
+        }
+
+    </style>
+    <script>
+        // JavaScript function to store form data in localStorage
+        function storeFormData() {
+            const uname = document.getElementById('uname').value;
+            const fname = document.getElementById('fname').value;
+            const lname = document.getElementById('lname').value;
+            const email = document.getElementById('email').value;
+            
+
+            // Store data in localStorage
+            localStorage.setItem('uname', uname);
+            localStorage.setItem('fname', fname);
+            localStorage.setItem('lname', lname);
+            localStorage.setItem('email', email);
+           
+        }
+
+        // Function to toggle password visibility
+        function togglePasswordVisibility(passwordFieldId, checkboxId) {
+            const passwordField = document.getElementById(passwordFieldId);
+            const checkbox = document.getElementById(checkboxId);
+            passwordField.type = checkbox.checked ? 'text' : 'password';
+        }
+
+        // Add event listeners to the password visibility checkboxes
+        window.onload = function() {
+            document.getElementById('showPassword').addEventListener('change', function() {
+                togglePasswordVisibility('pass1', 'showPassword');
+            });
+            document.getElementById('showConfirmPassword').addEventListener('change', function() {
+                togglePasswordVisibility('pass2', 'showConfirmPassword');
+            });
+        };
+
+        // Store data on form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('registrationForm').addEventListener('submit', function() {
+                storeFormData();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>   Create Account</h1>
+            </div>
+            <div class="card-body">
+                <form id="registrationForm" action="{{ url_for('handle_signup') }}" method="post">
+                    <div class="form-group">
+                        <label for="uname">User Name:</label>
+                        <input type="text" id="uname" name="uname" placeholder="Enter User Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fname">First Name:</label>
+                        <input type="text" id="fname" name="fname" placeholder="Enter First Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lname">Last Name:</label>
+                        <input type="text" id="lname" name="lname" placeholder="Enter Last Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" placeholder="Enter Email" required>
+                    </div>
+
+                   
+
+                    <div class="form-group">
+                        <label for="pass1">Password:</label>
+                        <input type="password" id="pass1" name="pass1" placeholder="Enter Password" required><br>
+                        <input type="checkbox" id="showPassword"> Show Password
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pass2">Confirm Password:</label>
+                        <input type="password" id="pass2" name="pass2" placeholder="Confirm Password" required><br>
+                        <input type="checkbox" id="showConfirmPassword"> Show Password
+                    </div>
+
+                    <div class="btn">
+                        <button type="submit">Create User</button>
+                    </div>
+                </form>
+
+                <div class="text-center">
+                    <p class="small"><a href="/"><u>Have an account? Go to login</u></a></p>
+                </div>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

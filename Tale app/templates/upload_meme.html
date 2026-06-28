@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body, h1, p, ul, li, a, button {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+       /* Header Styling */
+       header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #033193;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+    }
+    
+    body {
+        padding-top: 60px; /* Prevent content from being hidden behind header */
+    }
+    
+
+    header .logo {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    header nav a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 15px;
+        font-size: 16px;
+    }
+
+    header nav a:hover {
+        text-decoration: underline;
+    }
+
+    /* Sidebar Styling */
+    .left-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 200px;
+        height: 100%;
+        background-color: #222;
+        color: #fff;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        transform: translateX(-260px);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .left-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .back-arrow {
+        font-size: 24px;
+        cursor: pointer;
+        color: #fff;
+        background: none;
+        border: none;
+    }
+
+    .left-sidebar a {
+        display: block;
+        color: #fff;
+        text-decoration: none;
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        background: #444;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .left-sidebar a:hover {
+        background: #0077ff;
+    }
+    .sidebar-toggle {
+        background-color: #005bb5;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+    
+    .sidebar-toggle:hover {
+        background-color: #004699;
+    }
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            display: block;
+            background-color: #0077ff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .dark-mode-toggle:hover {
+            background: #005bb5;
+        }
+
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: #f8f2f2;
+        }
+        
+        nav {
+            margin-left: auto;
+            margin-right: 30px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        nav a:hover {
+            color: #0077ff;
+        }
+        .container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .form-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        form label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="file"], textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button.upload-btn {
+            padding: 12px;
+            background-color: #0077ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button.upload-btn:hover {
+            background-color: #005bb5;
+        }
+
+        /* Meme Post Styles */
+        .meme-post {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .meme-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .meme-img {
+            width: 100%;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .caption {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        /* Interaction Buttons */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .actions button {
+            background-color: #0077ff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .actions button:hover {
+            background-color: #005bb5;
+        }
+        /* Styling for stories */
+        .story {
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .story h3 {
+            margin-top: 0;
+        }
+
+        .emoji-picker {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .emoji-picker:hover {
+            transform: scale(1.2);
+        }
+
+        .story-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .story-buttons button {
+            background-color: #e0e0e0;
+            color: black;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .story-buttons button:hover {
+            background-color: #d0d0d0;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        form label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #0077ff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+   <!-- Header -->
+   <header>
+    <button class="sidebar-toggle" onclick="toggleLeftSidebar()">☰ Menu</button>
+    <div class="logo">Story Platform</div>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/upload_meme">Explore</a>
+        <a href="/profile">Profile</a>
+        <a href="/">Logout</a>
+    </nav>
+    </header>
+
+<!-- Full Left Sidebar -->
+<div class="left-sidebar" id="left-sidebar">
+    <div class="sidebar-header">
+        <button class="back-arrow" onclick="toggleLeftSidebar()">⬅</button>
+    </div>
+    <a href="/story">📚 Stories</a>
+    <a href="/memes">😂 Memes</a>
+    <a href="/story1">🎤 Singing Competition</a>
+    <a href="/index">📂 Saved Stories</a>
+    <a href="/settings">⚙️ Account Settings</a>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+</div>
+
+
+<div class="container">
+    <h1>Upload a Meme</h1>
+    <div class="form-container">
+        <form id="meme-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ current_user.uname }}" disabled>
+
+            <label for="file">Choose a Meme Image:</label>
+            <input type="file" id="file" name="file" required>
+
+            <label for="caption">Add a Caption:</label>
+            <textarea id="caption" name="caption" placeholder="Add a funny caption..." required></textarea>
+
+            <button type="submit" class="upload-btn">Upload Meme</button>
+        </form>
+    </div>
+
+
+    <div class="container">
+        <h2>Write Your Story</h2>
+
+        
+        <form action="/story" method="POST">
+           
+            <label for="title">Story Title:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="story">Your Story:</label>
+            <textarea id="story" name="story" rows="10" required></textarea>
+
+            <!-- Emoji Picker Section -->
+            <div>
+                <span class="emoji-picker" onclick="addEmoji('😀')">😀</span>
+                <span class="emoji-picker" onclick="addEmoji('😂')">😂</span>
+                <span class="emoji-picker" onclick="addEmoji('❤️')">❤️</span>
+                <span class="emoji-picker" onclick="addEmoji('👍')">👍</span>
+                <span class="emoji-picker" onclick="addEmoji('🎉')">🎉</span>
+                <span class="emoji-picker" onclick="addEmoji('🔥')">🔥</span>
+            </div>
+
+            <button type="submit">Upload Story</button>
+        </form>
+    </div>
+    <!-- Uploaded Memes -->
+    <h2>Recent Memes</h2>
+    {% if memes %}
+        {% for meme in memes %}
+            <div class="meme-post">
+                <div class="meme-header">
+                    <img src="{{ url_for('static', filename='profile_pics/' + (meme.user.profile_pic if meme.user.profile_pic else 'default.png')) }}"  
+                    class="profile-pic" alt="Profile Picture">
+                    <p>by <strong>{{ meme.user.uname }}</strong></p>
+
+                    <!-- Follow Button -->
+                    {% if current_user.id != meme.user.id %}
+                        <button class="follow-btn" onclick="toggleFollow({{ meme.user.id }}, this)">
+                            {{ 'Following' if meme.user in current_user.following else 'Follow +' }}
+                        </button>
+                    {% endif %}
+                </div>
+
+                <img src="{{ meme.file_path }}" alt="Meme Image" class="meme-img">
+                <p class="caption">{{ meme.caption }}</p>
+                <p class="post-time">Uploaded at: {{ meme.timestamp.strftime('%B %d, %Y %I:%M %p') if meme.timestamp else 'Unknown Date' }}</p>
+
+                <div class="actions">
+                    <button onclick="likeMeme(this)">
+                        👍 Like <span class="like-count">0</span>
+                    </button>
+                    <button onclick="shareMeme()">🔄 Share</button>
+                    <button onclick="subscribe()">❤️ Subscribe</button>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align: center; font-size: 18px;">No memes uploaded yet. Be the first to upload a meme!</p>
+    {% endif %}
+</div>
+
+
+</body>
+<script>
+    function toggleLeftSidebar() {
+        document.getElementById("left-sidebar").classList.toggle("open");
+    }
+function toggleFollow(userId, button) {
+    fetch(`/toggle_follow/${userId}`, { method: "POST" })
+        .then(response => response.json())
+        .then(data => {
+            button.textContent = data.status;
+            button.style.backgroundColor = data.status === "Following" ? "#218838" : "#28a745";
+        })
+        .catch(error => console.error("Error:", error));
+}
+
+function likeMeme(button) {
+    let count = button.querySelector(".like-count");
+    count.textContent = parseInt(count.textContent) + 1;
+}
+
+function shareMeme() {
+    alert("Meme shared successfully!");
+}
+
+function subscribe() {
+    alert("Subscribed to this user!");
+}
+</script>
+
+
+    </body>
+</html>
